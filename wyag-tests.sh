@@ -194,8 +194,32 @@ set -e
 cd ..
 cmp file1 file2
 
+step "commit argument boundaries"
+cd left
+# 1. Test minimum accepted argument list (commit without -m)
+echo "gamma" > commit_test.txt
+git add commit_test.txt
+"$wyag" commit
+head_commit=$("$wyag" rev-parse HEAD)
+test -n "$head_commit"
 
+# 2. Test optional argument (-m with message)
+echo "delta" >> commit_test.txt
+git add commit_test.txt
+"$wyag" commit -m "Test optional message argument"
+"$wyag" cat-file commit HEAD > ../commit_obj
+grep -q "Test optional message argument" ../commit_obj
 
+# 3. Test invalid combinations (unrecognized option and unexpected positional argument)
+set +e
+"$wyag" commit --invalid-flag 2> /dev/null
+status_invalid_opt=$?
+"$wyag" commit unexpected_positional 2> /dev/null
+status_invalid_pos=$?
+set -e
+test $status_invalid_opt -ne 0
+test $status_invalid_pos -ne 0
+cd ..
 
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"

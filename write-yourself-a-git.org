@@ -3886,8 +3886,12 @@ and the message:
       return object_write(commit, repo)
 #+end_src
 
-All what remains to write is =cmd_commit=, the bridge function to the
-=wyag commit= command:
+All that remains to write is =cmd_commit=, the bridge function to the
+=wyag commit= command.  The argument contract and boundary behavior are:
+- *Minimum accepted argument list*: =wyag commit= (invoking the command with no arguments). When the optional =-m= flag is omitted, the commit message defaults to an empty string.
+- *Optional argument*: =-m message= to specify a custom commit message.
+- *Invalid combinations*: Passing unrecognized flags or unexpected positional arguments is rejected by the argument parser with an exit code of 2.
+- *Execution & State*: Generates the root tree from the current index, writes a new commit object, updates the active branch ref (or HEAD if detached) to point to the new commit, and preserves existing repository and index state.
 
 #+begin_src python :tangle libwyag.py
   def cmd_commit(args):
@@ -3896,13 +3900,24 @@ All what remains to write is =cmd_commit=, the bridge function to the
       # Create trees, grab back SHA for the root tree.
       tree = tree_from_index(repo, index)
 
+      # Handle optional commit message and author details
+      message = args.message if args.message is not None else ""
+
+      try:
+          author = gitconfig_user_get(gitconfig_read())
+      except Exception:
+          author = None
+
+      if not author:
+          author = "wyag <wyag@example.com>"
+
       # Create the commit object itself
       commit = commit_create(repo,
                              tree,
                              object_find(repo, "HEAD"),
-                             gitconfig_user_get(gitconfig_read()),
+                             author,
                              datetime.now(),
-                             args.message)
+                             message)
 
       # Update HEAD so our commit is now the tip of the active branch.
       active_branch = branch_get_active(repo)
@@ -3911,7 +3926,7 @@ All what remains to write is =cmd_commit=, the bridge function to the
               fd.write(commit + "\n")
       else: # Otherwise, we update HEAD itself.
           with open(repo_file(repo, "HEAD"), "w") as fd:
-              fd.write("\n")
+              fd.write(commit + "\n")
 #+end_src
 
 And we're done!
