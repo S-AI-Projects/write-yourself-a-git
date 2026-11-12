@@ -2876,7 +2876,11 @@ Again, the command parser is trivial:
   argsp.add_argument("path", nargs="+", help="Paths to check")
 #+END_src
 
-And the function is just as simple:
+The bridge function queries ignore rules without modifying any repository state.
+Its state transition and contract properties are:
+- *Intended effect*: Checks each provided path against the repository's ignore rules (~.gitignore~ hierarchy and exclude files) and prints matching ignored paths to standard output.
+- *State invariance*: The command is strictly read-only: the index (~.git/index~), working tree files, repository refs, and object database remain completely unchanged before and after invocation.
+- *Argument validation*: Requires one or more path arguments (~nargs="+"~). Invocation with zero arguments is rejected by the argument parser with exit code 2, preserving all repository state.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_check_ignore(args):

@@ -194,8 +194,31 @@ set -e
 cd ..
 cmp file1 file2
 
+step "check-ignore state transitions"
+cd left
+git_head_before=$(git rev-parse HEAD)
+git_files_before=$(git ls-files)
+echo "*.log" > .gitignore
+git add .gitignore
+touch ignored.log not_ignored.txt
+"$wyag" check-ignore ignored.log > ../check_ignore_out
+test -s ../check_ignore_out
+grep -q "ignored.log" ../check_ignore_out
 
+"$wyag" check-ignore not_ignored.txt > ../check_ignore_none
+test ! -s ../check_ignore_none
 
+git_head_after=$(git rev-parse HEAD)
+test "$git_head_before" = "$git_head_after"
+test -f not_ignored.txt
+test -f ignored.log
+
+set +e
+"$wyag" check-ignore 2> /dev/null
+status_no_args=$?
+set -e
+test $status_no_args -ne 0
+cd ..
 
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
