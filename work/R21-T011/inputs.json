@@ -1,0 +1,54 @@
+{
+  "repository_setup": {
+    "notes.txt": "alpha\n",
+    "file with space.txt": "space content\n",
+    "staged_file.txt": "staged data\n (staged change)",
+    "unstaged_file.txt": "unstaged data\n (unstaged change)"
+  },
+  "test_cases": [
+    {
+      "name": "ordinary_success_notes_file",
+      "cmd": [
+        "/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag",
+        "rm",
+        "notes.txt"
+      ],
+      "target": "notes.txt"
+    },
+    {
+      "name": "ordinary_success_spaced_filename",
+      "cmd": [
+        "/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag",
+        "rm",
+        "file with space.txt"
+      ],
+      "target": "file with space.txt"
+    },
+    {
+      "name": "missing_path_not_in_index",
+      "cmd": [
+        "/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag",
+        "rm",
+        "nonexistent.txt"
+      ],
+      "target": "nonexistent.txt"
+    },
+    {
+      "name": "path_outside_worktree",
+      "cmd": [
+        "/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag",
+        "rm",
+        "../outside.txt"
+      ],
+      "target": "../outside.txt"
+    },
+    {
+      "name": "zero_case_rejection",
+      "cmd": [
+        "/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag",
+        "rm"
+      ],
+      "target": null
+    }
+  ]
+}

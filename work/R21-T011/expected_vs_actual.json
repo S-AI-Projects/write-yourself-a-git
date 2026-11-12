@@ -1,0 +1,233 @@
+[
+  {
+    "test_name": "ordinary_success_notes_file",
+    "category": "ordinary_success",
+    "args": [
+      "rm",
+      "notes.txt"
+    ],
+    "expected_exit_code": 0,
+    "actual_exit_code": 0,
+    "expected_stdout": "",
+    "actual_stdout": "",
+    "actual_stderr": "",
+    "state_before": {
+      "index_entries": [
+        "file with space.txt",
+        "notes.txt",
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "file with space.txt",
+        "notes.txt",
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt"
+      ]
+    },
+    "state_after": {
+      "index_entries": [
+        "file with space.txt",
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "file with space.txt",
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  notes.txt"
+      ]
+    },
+    "git_cli_comparison": {
+      "git_exit_code": 0,
+      "index_match": true
+    },
+    "status": "PASSED"
+  },
+  {
+    "test_name": "ordinary_success_spaced_filename",
+    "category": "ordinary_success",
+    "args": [
+      "rm",
+      "file with space.txt"
+    ],
+    "expected_exit_code": 0,
+    "actual_exit_code": 0,
+    "expected_stdout": "",
+    "actual_stdout": "",
+    "actual_stderr": "",
+    "state_before": {
+      "index_entries": [
+        "file with space.txt",
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "file with space.txt",
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  notes.txt"
+      ]
+    },
+    "state_after": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "git_cli_comparison": {
+      "git_exit_code": 0,
+      "index_match": true
+    },
+    "status": "PASSED"
+  },
+  {
+    "test_name": "missing_path_not_in_index",
+    "category": "documented_failure",
+    "args": [
+      "rm",
+      "nonexistent.txt"
+    ],
+    "expected_exit_code": "non-zero",
+    "actual_exit_code": 1,
+    "expected_error_pattern": "Cannot remove paths not in the index",
+    "actual_stderr": "Traceback (most recent call last):\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag\", line 4, in <module>\n    libwyag.main()\n    ~~~~~~~~~~~~^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 63, in main\n    case \"rm\"           : cmd_rm(args)\n                          ~~~~~~^^^^^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 1331, in cmd_rm\n    rm(repo, args.path)\n    ~~^^^^^^^^^^^^^^^^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 1368, in rm\n    raise Exception(f\"Cannot remove paths not in the index: {abspaths}\")\nException: Cannot remove paths not in the index: {'/private/var/folders/y7/d8g00xxj2w10q68dgdnfqjsr0000gn/T/tmpcddqa9o7/wyag_repo/nonexistent.txt'}\n",
+    "state_before": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "state_after": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "repo_state_unchanged": true,
+    "status": "PASSED"
+  },
+  {
+    "test_name": "path_outside_worktree",
+    "category": "documented_failure",
+    "args": [
+      "rm",
+      "../outside.txt"
+    ],
+    "expected_exit_code": "non-zero",
+    "actual_exit_code": 1,
+    "expected_error_pattern": "Cannot remove paths outside of worktree",
+    "actual_stderr": "Traceback (most recent call last):\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/wyag\", line 4, in <module>\n    libwyag.main()\n    ~~~~~~~~~~~~^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 63, in main\n    case \"rm\"           : cmd_rm(args)\n                          ~~~~~~^^^^^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 1331, in cmd_rm\n    rm(repo, args.path)\n    ~~^^^^^^^^^^^^^^^^^\n  File \"/Users/choudhary/Desktop/SnAI/project/write-yourself-a-git/libwyag.py\", line 1346, in rm\n    raise Exception(f\"Cannot remove paths outside of worktree: {paths}\")\nException: Cannot remove paths outside of worktree: ['../outside.txt']\n",
+    "state_before": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "state_after": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "repo_state_unchanged": true,
+    "status": "PASSED"
+  },
+  {
+    "test_name": "zero_case_rejection",
+    "category": "argument_boundary",
+    "args": [
+      "rm"
+    ],
+    "expected_exit_code": 2,
+    "actual_exit_code": 2,
+    "expected_error_pattern": "required: path",
+    "actual_stderr": "usage: wyag rm [-h] path [path ...]\nwyag rm: error: the following arguments are required: path\n",
+    "state_before": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "state_after": {
+      "index_entries": [
+        "staged_file.txt"
+      ],
+      "worktree_files": [
+        "staged_file.txt",
+        "unstaged_file.txt"
+      ],
+      "status_porcelain": [
+        "?? unstaged_file.txt",
+        "A  staged_file.txt",
+        "D  \"file with space.txt\"",
+        "D  notes.txt"
+      ]
+    },
+    "repo_state_unchanged": true,
+    "status": "PASSED"
+  }
+]
