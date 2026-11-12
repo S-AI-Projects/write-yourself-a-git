@@ -147,6 +147,43 @@ cd ..
 diff -r temp1 temp2
 rm -rf temp1 temp2
 
+# Characterization tests for cmd_checkout
+# 1. Checkout into pre-existing empty directory succeeds
+mkdir temp_empty
+cd left
+"$wyag" checkout HEAD ../temp_empty
+cd ..
+rm -rf temp_empty
+
+# 2. Target is a regular file (not a directory) -> fails
+touch temp_file
+cd left
+set +e
+"$wyag" checkout HEAD ../temp_file > /dev/null 2>&1
+status_notdir=$?
+set -e
+if [[ $status_notdir -eq 0 ]]; then
+    echo "Expected failure when checkout target is a file, but got 0"
+    exit 1
+fi
+cd ..
+rm -f temp_file
+
+# 3. Target directory is not empty -> fails
+mkdir temp_nonempty
+touch temp_nonempty/existing.txt
+cd left
+set +e
+"$wyag" checkout HEAD ../temp_nonempty > /dev/null 2>&1
+status_notempty=$?
+set -e
+if [[ $status_notempty -eq 0 ]]; then
+    echo "Expected failure when checkout target directory is not empty, but got 0"
+    exit 1
+fi
+cd ..
+rm -rf temp_nonempty
+
 step rev-parse
 cd left
 "$wyag" rev-parse HEAD  > ../file1
