@@ -1039,10 +1039,45 @@ Which converts to:
 #+END_SRC
 
 The actual implementation is very simple.  As usual, we create a small
-bridge function:
+bridge function.
+
+*** Usage Example
+A complete usage example demonstrating hashing and storing an object:
+- *Setup*: Create an input file inside a git repository:
+  #+BEGIN_EXAMPLE
+  $ echo "Hello, world!" > hello.txt
+  #+END_EXAMPLE
+- *Command*: Compute the SHA-1 hash and write the blob to the repository object database:
+  #+BEGIN_EXAMPLE
+  $ wyag hash-object -w hello.txt
+  #+END_EXAMPLE
+- *Output*:
+  #+BEGIN_EXAMPLE
+  af5626b4a114abcb82d63db7c8082c3c4756e51b
+  #+END_EXAMPLE
+- *State verification*: Check that the loose object file exists under =.git/objects/= and matches the content:
+  #+BEGIN_EXAMPLE
+  $ test -f .git/objects/af/5626b4a114abcb82d63db7c8082c3c4756e51b
+  $ wyag cat-file blob af5626b4a114abcb82d63db7c8082c3c4756e51b
+  Hello, world!
+  #+END_EXAMPLE
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_hash_object(args):
+      """Compute object ID and optionally create a blob from a file.
+
+      Usage Example:
+        Setup:
+          $ echo "Hello, world!" > hello.txt
+        Command (compute hash and write to repository):
+          $ wyag hash-object -w hello.txt
+        Output:
+          af5626b4a114abcb82d63db7c8082c3c4756e51b
+        State verification:
+          $ test -f .git/objects/af/5626b4a114abcb82d63db7c8082c3c4756e51b
+          $ wyag cat-file blob af5626b4a114abcb82d63db7c8082c3c4756e51b
+          Hello, world!
+      """
       if args.write:
           repo = repo_find()
       else:

@@ -43,6 +43,34 @@ cd ..
 ls left/.git/objects/b1/7df541639ec7814a9ad274e177d9f8da1eb951 > /dev/null
 ls right/.git/objects/b1/7df541639ec7814a9ad274e177d9f8da1eb951 > /dev/null
 
+step "hash-object documented usage example"
+cd left
+# 1. Setup: create input file
+echo "Hello, world!" > hello.txt
+
+# 2. Command: compute hash and write object to database
+example_sha=$("$wyag" hash-object -w hello.txt)
+expected_sha="af5626b4a114abcb82d63db7c8082c3c4756e51b"
+if [[ "$example_sha" != "$expected_sha" ]]; then
+    echo "Expected hash $expected_sha, got $example_sha"
+    exit 1
+fi
+
+# 3. State verification: object file exists under .git/objects/
+if [[ ! -f .git/objects/af/5626b4a114abcb82d63db7c8082c3c4756e51b ]]; then
+    echo "Object file .git/objects/af/5626b4a114abcb82d63db7c8082c3c4756e51b not found!"
+    exit 1
+fi
+
+# 4. State verification: round-trip content via cat-file
+cat_verified=$("$wyag" cat-file blob "$example_sha")
+if [[ "$cat_verified" != "Hello, world!" ]]; then
+    echo "cat-file content mismatch: expected 'Hello, world!', got '$cat_verified'"
+    exit 1
+fi
+rm hello.txt
+cd ..
+
 step cat-file
 cd left
 "$wyag" cat-file blob b17d > ../file1
