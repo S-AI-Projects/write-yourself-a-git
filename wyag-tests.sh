@@ -168,6 +168,60 @@ git ls-files > ../file2
 cd ..
 cmp file1 file2
 
+step "rm"
+cd left
+echo "alpha" > notes.txt
+echo "space data" > "spaced file.txt"
+git add notes.txt "spaced file.txt"
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "Add notes" > /dev/null
+"$wyag" rm notes.txt
+test ! -f notes.txt
+"$wyag" ls-files > ../file1
+
+cd ../right
+echo "alpha" > notes.txt
+echo "space data" > "spaced file.txt"
+git add notes.txt "spaced file.txt"
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "Add notes" > /dev/null
+git rm notes.txt > /dev/null
+test ! -f notes.txt
+git ls-files > ../file2
+cd ..
+cmp file1 file2
+
+cd left
+"$wyag" rm "spaced file.txt"
+test ! -f "spaced file.txt"
+
+cd ../right
+git rm "spaced file.txt" > /dev/null
+test ! -f "spaced file.txt"
+cd ..
+
+cd left
+set +e
+"$wyag" rm missing.txt 2> /dev/null
+status_wyag=$?
+cd ../right
+git rm missing.txt 2> /dev/null
+status_git=$?
+set -e
+cd ..
+test $status_wyag -ne 0
+test $status_git -ne 0
+
 gitignore_prepare() {
     mkdir -p a/b/c/
     echo "!*.txt" > a/b/c/.gitignore

@@ -3465,7 +3465,10 @@ is what the =git rm= command does.
   saved.  Proceed with caution.
 #+END_danger
 
-=rm= takes a single argument, a list of paths to remove:
+=rm= takes a single argument, a list of paths to remove.  The command contract specifies:
+- *Arguments*: One or more file paths (~nargs="+"~) within the repository worktree.
+- *Output & Status*: Returns exit code 0 and produces no stdout on successful removal. Exits non-zero if a path is missing from the index, lies outside the worktree, or if no arguments are provided.
+- *State changes*: Unlinks removed files from the filesystem and removes their corresponding entries from the Git index (~.git/index~), while preserving unrelated files, staged changes, and unstaged modifications.
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("rm", help="Remove files from the working tree and the index.")
