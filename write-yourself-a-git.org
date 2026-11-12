@@ -1976,7 +1976,13 @@ Let's get started.  As usual, we need a subparser:
                      help="The EMPTY directory to checkout on.")
 #+END_SRC
 
-A wrapper function:
+A wrapper function to validate destination requirements and initiate checkout:
+- Resolves commit objects to their root tree (or uses a direct tree object).
+- Clarifies destination path preconditions with explicit linear guards:
+  1. Non-existent path: created via =os.makedirs(args.path)=.
+  2. Existing non-directory: raises =Exception(f"Not a directory {args.path}!")=.
+  3. Existing non-empty directory: raises =Exception(f"Not empty {args.path}!")=.
+  4. Existing empty directory: accepted as checkout target.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_checkout(args):
@@ -1988,14 +1994,13 @@ A wrapper function:
       if obj.fmt == b'commit':
           obj = object_read(repo, obj.kvlm[b'tree'].decode("ascii"))
 
-      # Verify that path is an empty directory
-      if os.path.exists(args.path):
-          if not os.path.isdir(args.path):
-              raise Exception(f"Not a directory {args.path}!")
-          if os.listdir(args.path):
-              raise Exception(f"Not empty {args.path}!")
-      else:
+      # Verify that target path is an empty directory (or create it if nonexistent)
+      if not os.path.exists(args.path):
           os.makedirs(args.path)
+      elif not os.path.isdir(args.path):
+          raise Exception(f"Not a directory {args.path}!")
+      elif os.listdir(args.path):
+          raise Exception(f"Not empty {args.path}!")
 
       tree_checkout(repo, obj, os.path.realpath(args.path))
 #+END_SRC
