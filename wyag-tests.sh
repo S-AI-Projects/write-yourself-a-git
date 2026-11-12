@@ -21,6 +21,100 @@ step Create repos
 "$wyag" init left
 git init right > /dev/null
 
+# Repeatable test entry point for repo_create
+test_repo_create_entrypoint() {
+    local tmp_repo_test
+    tmp_repo_test=$(mktemp -d /tmp/wyag-repocreate-XXXXXX)
+
+    # 1. Successful repository creation and state verification
+    local target="$tmp_repo_test/fresh_repo"
+    "$wyag" init "$target" > /dev/null
+
+    if [[ ! -d "$target/.git/objects" ]]; then
+        echo "Missing .git/objects"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+    if [[ ! -d "$target/.git/refs/heads" ]]; then
+        echo "Missing .git/refs/heads"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+    if [[ ! -d "$target/.git/refs/tags" ]]; then
+        echo "Missing .git/refs/tags"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+    if [[ ! -f "$target/.git/HEAD" ]]; then
+        echo "Missing .git/HEAD"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+    if [[ ! -f "$target/.git/config" ]]; then
+        echo "Missing .git/config"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+    if ! grep -q "ref: refs/heads/master" "$target/.git/HEAD"; then
+        echo "Incorrect HEAD reference"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+
+    # 2. Failure propagation: path is an existing regular file
+    local file_target="$tmp_repo_test/file_target"
+    touch "$file_target"
+    set +e
+    "$wyag" init "$file_target" > /dev/null 2>&1
+    local fail_file_code=$?
+    set -e
+    if [[ $fail_file_code -eq 0 ]]; then
+        echo "Expected failure when target is a file, but succeeded"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+
+    # 3. Failure propagation: .git already exists and is not empty
+    touch "$target/.git/blocking_file"
+    set +e
+    "$wyag" init "$target" > /dev/null 2>&1
+    local fail_nonempty_code=$?
+    set -e
+    if [[ $fail_nonempty_code -eq 0 ]]; then
+        echo "Expected failure when .git is not empty, but succeeded"
+        rm -rf "$tmp_repo_test"
+        return 1
+    fi
+
+    # 4. Direct Python contract verification
+    local wyag_dir
+    wyag_dir=$(dirname "$wyag")
+    python3 -c "
+import os, sys
+sys.path.insert(0, '$wyag_dir')
+import libwyag
+
+# Clean creation
+r = libwyag.repo_create('$tmp_repo_test/py_repo')
+assert r is not None
+assert os.path.isdir(os.path.join(r.gitdir, 'objects'))
+
+# Failure propagation on existing file
+try:
+    libwyag.repo_create('$file_target')
+    assert False, 'Expected exception'
+except Exception as e:
+    assert 'not a directory' in str(e).lower()
+"
+
+    # Clean up temporary state
+    rm -rf "$tmp_repo_test"
+    return 0
+}
+
+step "repo_create repeatable entrypoint"
+test_repo_create_entrypoint
+
 step status
 cd left
 git status > /dev/null
