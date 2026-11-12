@@ -194,8 +194,29 @@ set -e
 cd ..
 cmp file1 file2
 
+step "log_graphviz path quoting and wildcards"
+cd left
+echo "special text" > "file with space.txt"
+git add "file with space.txt"
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "Commit with * wildcard & quotes" > /dev/null
+"$wyag" log HEAD > ../log_out
+test -s ../log_out
+grep -q "wyaglog" ../log_out
+grep -q "Commit with \* wildcard" ../log_out
 
-
+set +e
+"$wyag" log '*' 2> /dev/null
+status_wildcard=$?
+set -e
+test $status_wildcard -ne 0
+test -f "file with space.txt"
+cd ..
 
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
