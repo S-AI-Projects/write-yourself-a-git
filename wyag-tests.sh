@@ -28,6 +28,68 @@ cd ../right
 git status > /dev/null
 cd ..
 
+step "cmd_status_index_worktree regression protection"
+status_testdir="$testdir/status_test"
+mkdir -p "$status_testdir"
+cd "$status_testdir"
+git init > /dev/null
+echo "original content" > mod.txt
+echo "to be deleted" > del.txt
+echo "touch content" > touch.txt
+echo "*.ignored" > .gitignore
+git add mod.txt del.txt touch.txt .gitignore
+GIT_AUTHOR_NAME="Tester" GIT_AUTHOR_EMAIL="test@example.com" GIT_COMMITTER_NAME="Tester" GIT_COMMITTER_EMAIL="test@example.com" git commit -m "baseline" > /dev/null
+
+# 1. Modify mod.txt
+echo "new content" > mod.txt
+
+# 2. Delete del.txt
+rm del.txt
+
+# 3. Touch touch.txt without changing content
+sleep 0.05
+touch touch.txt
+
+# 4. Untracked and ignored files
+echo "untracked" > untracked.txt
+echo "ignored" > test.ignored
+
+# Run wyag status
+status_out=$("$wyag" status)
+
+# Regression condition 1: deleted file is detected
+echo "$status_out" | grep -q "deleted:  del.txt" || {
+    echo "Regression failure: deleted file not detected"
+    exit 1
+}
+
+# Regression condition 2: modified file is detected
+echo "$status_out" | grep -q "modified: mod.txt" || {
+    echo "Regression failure: modified file not detected"
+    exit 1
+}
+
+# Regression condition 3: touched file with identical content must NOT be marked modified
+if echo "$status_out" | grep -q "modified: touch.txt"; then
+    echo "Regression failure: touched file with identical content falsely marked modified"
+    exit 1
+fi
+
+# Regression condition 4: untracked file is listed
+echo "$status_out" | grep -q "untracked.txt" || {
+    echo "Regression failure: untracked file missing from status"
+    exit 1
+}
+
+# Regression condition 5: ignored file must NOT be listed
+if echo "$status_out" | grep -q "test.ignored"; then
+    echo "Regression failure: ignored file incorrectly listed in untracked files"
+    exit 1
+fi
+
+cd "$testdir"
+rm -rf "$status_testdir"
+
 step hash-object
 echo "Don't read me" > README
 "$wyag" hash-object README > hash1

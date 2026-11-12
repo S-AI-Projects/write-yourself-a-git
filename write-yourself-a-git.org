@@ -3256,9 +3256,19 @@ And the command itself:
 #+end_src
 
 *** Finding changes between index and worktree
+Comparing the index with the worktree requires evaluating three distinct state conditions:
+1. *Deleted files*: When an entry exists in the index but its corresponding file no longer exists in the worktree (=not os.path.exists(full_path)=), it is reported as deleted.
+2. *Modified files*: When file metadata timestamps (=st_ctime_ns= or =st_mtime_ns=) differ from the index record, a deep SHA hash comparison is performed. If the calculated hash differs from the cached index hash (=not same=), the file is reported as modified; files with touched timestamps but identical content remain clean.
+3. *Untracked vs ignored*: Files present in the worktree but absent from the index are filtered through =check_ignore()=, displaying only unignored files under =Untracked files:=.
 
 #+begin_src python :tangle libwyag.py
   def cmd_status_index_worktree(repo, index):
+      """Compare the index against the worktree and report changes.
+
+      - Identifies deleted files missing from the worktree.
+      - Compares timestamps and hashes to detect modified files.
+      - Identifies untracked files while respecting .gitignore rules.
+      """
       print("Changes not staged for commit:")
 
       ignore = gitignore_read(repo)
