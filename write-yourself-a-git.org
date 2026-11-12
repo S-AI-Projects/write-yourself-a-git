@@ -518,9 +518,23 @@ create if doesn't already exist) and create the *git directory* inside
  - =.git/description=, holds a free-form description of this
    repository's contents, for humans, and is rarely used.
 
+*** Repository Creation Contract and Testing Integration
+=repo_create()= serves as the fundamental constructor for new Git repositories.
+Its integration contract guarantees:
+- *Independence*: Operates fully locally using filesystem operations, requiring no external network or daemon services.
+- *Deterministic initialization*: Creates the worktree, =.git= directory, core subdirectories (=branches=, =objects=, =refs/tags=, =refs/heads=), and default configuration files (=description=, =HEAD=, =config=).
+- *Failure propagation*:
+  - If =path= exists but is not a directory, raises =Exception(f"{path} is not a directory!")=.
+  - If =.git= exists and is non-empty, raises =Exception(f"{path} is not empty!")=.
+- *Clean isolation*: Designed for repeatable execution within temporary test fixtures that isolate and clean up state after test runs.
+
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_create(path):
-      """Create a new repository at path."""
+      """Create a new repository at path.
+
+      Guarantees repeatable local creation without external dependencies.
+      Propagates errors if path is not a directory or if .git is not empty.
+      """
 
       repo = GitRepository(path, True)
 
