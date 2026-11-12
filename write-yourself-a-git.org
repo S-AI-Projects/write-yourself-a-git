@@ -970,15 +970,52 @@ The subparser is very simple:
                      help="The object to display")
 #+END_SRC
 
-And we can implement the functions, which just call into existing code we wrote earlier:
+And we can implement the functions, which call into the object management routines.
+
+*** Diagnostics and Troubleshooting
+When =cat-file= is invoked on an object that cannot be resolved or does not exist,
+it raises an informative exception:
+- *Failing invocation example*:
+  #+BEGIN_EXAMPLE
+  $ wyag cat-file blob 0000000000000000000000000000000000000000
+  Exception: No such reference 0000000000000000000000000000000000000000.
+  #+END_EXAMPLE
+  Exit status: non-zero (1).
+- *Troubleshooting explanation*:
+  The requested object ID or reference does not exist in the repository's =.git/objects/= store,
+  or the object's format does not match the requested =fmt=.
+  Troubleshooting checklist:
+  1. Ensure the object was written to the repository database (e.g. via =wyag hash-object -w <file>=).
+  2. Verify that the specified object format (=blob=, =commit=, =tree=, =tag=) matches the actual stored object type.
+  3. Verify that the hash or reference name is spelled correctly.
+- *Corrected invocation succeeding afterwards*:
+  #+BEGIN_EXAMPLE
+  $ echo "hello" > myfile.txt
+  $ sha=$(wyag hash-object -w myfile.txt)
+  $ wyag cat-file blob $sha
+  hello
+  #+END_EXAMPLE
+  Exit status: 0.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_cat_file(args):
+      """Display repository object contents with failure diagnostics.
+
+      Diagnostics:
+      - If object reference or hash is missing, raises Exception("No such reference ...").
+      - If object cannot be resolved as the specified type, raises Exception("Cannot resolve object ...").
+      - Corrected invocation succeeds with exit status 0 once object is written via hash-object -w.
+      """
       repo = repo_find()
       cat_file(repo, args.object, fmt=args.type.encode())
 
   def cat_file(repo, obj, fmt=None):
-      obj = object_read(repo, object_find(repo, obj, fmt=fmt))
+      sha = object_find(repo, obj, fmt=fmt)
+      if not sha:
+          raise Exception(f"Cannot resolve object {obj} as type {fmt.decode('ascii') if fmt else 'any'}.")
+      obj = object_read(repo, sha)
+      if not obj:
+          raise Exception(f"Object {sha} not found in repository.")
       sys.stdout.buffer.write(obj.serialize())
 #+END_SRC
 

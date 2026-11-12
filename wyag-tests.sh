@@ -59,6 +59,28 @@ git cat-file blob b17df541639ec7814a9ad274e177d9f8da1eb951 > ../file2
 cd ..
 cmp file1 file2
 
+step "cat-file failure diagnostic and recovery"
+cd left
+# 1. Failing invocation: attempt to read missing object from fixture
+set +e
+"$wyag" cat-file blob 0000000000000000000000000000000000000000 > /dev/null 2>&1
+fail_code=$?
+set -e
+if [[ $fail_code -eq 0 ]]; then
+    echo "Expected failure when cat-file called with nonexistent hash, but got 0"
+    exit 1
+fi
+
+# 2. Corrected invocation: write fixture to object database and cat-file succeeds
+echo "diagnostic recovery content" > diag_fixture.txt
+diag_sha=$("$wyag" hash-object -w diag_fixture.txt)
+"$wyag" cat-file blob "$diag_sha" > ../file1
+echo "diagnostic recovery content" > ../file2
+rm -f diag_fixture.txt
+cd ..
+cmp file1 file2
+rm -f file1 file2
+
 step "Create commit (git only, nothing is tested)" #@FIXME Add wyag commit
 cd left
 echo "Aleph" > hebraic-letter.txt
