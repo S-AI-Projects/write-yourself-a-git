@@ -197,6 +197,51 @@ cmp file1 file2
 
 
 
+step "repo_find environment isolation"
+# 1. Success case: discover repository root from nested subdirectory
+cd left
+mkdir -p sub1/sub2
+cd sub1/sub2
+"$wyag" status > /dev/null
+cd "$testdir"
+
+# 2. Edge / missing-dependency case: isolated temporary directory without .git
+isolated_non_repo=$(mktemp -d /tmp/wyag-non-repo-XXXXXX)
+cd "$isolated_non_repo"
+set +e
+"$wyag" status > /dev/null 2>&1
+status_code=$?
+set -e
+if [[ $status_code -eq 0 ]]; then
+    echo "Expected repo_find failure outside git repository, but got 0"
+    exit 1
+fi
+
+# 3. Direct libwyag repo_find contract verification (success, missing-dependency required=False, required=True)
+python3 -c "
+import os
+import sys
+sys.path.insert(0, '$(dirname "$wyag")')
+import libwyag
+
+# Success from deep path
+repo = libwyag.repo_find('$testdir/left/sub1/sub2')
+assert repo is not None
+assert repo.worktree == os.path.realpath('$testdir/left')
+
+# Missing dependency with required=False returns None
+assert libwyag.repo_find('$isolated_non_repo', required=False) is None
+
+# Missing dependency with required=True raises Exception('No git directory.')
+try:
+    libwyag.repo_find('$isolated_non_repo', required=True)
+    assert False, 'Expected Exception(\"No git directory.\")'
+except Exception as e:
+    assert 'No git directory.' in str(e)
+"
+rm -rf "$isolated_non_repo"
+cd "$testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

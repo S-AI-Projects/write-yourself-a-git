@@ -648,13 +648,25 @@ almost all Git functions work on an existing repository (except
 =init=, of course!).  Sometimes that root is the current directory,
 but it may also be a parent: your repository's root may be in
 =~/Documents/MyProject=, but you may currently be working in
-=~/Documents/MyProject/src/tui/frames/mainview/=.  The =repo_find()=
-function we'll now create will look for that root, starting at the
+=~/Documents/MyProject/src/tui/frames/mainview/=.  The =repo_find()= function we'll now create will look for that root, starting at the
 current directory and recursing back to =/=.  To identify a path as a
 repository, it will check for the presence of a =.git= directory.
+Its environment isolation contract specifies:
+- *Deterministic discovery*: Recursively traverses parent directories without invoking external shell processes.
+- *Success case*: Returns a =GitRepository= when a directory containing a =.git= folder is found.
+- *Missing-dependency branch*: If root is reached without finding a repository:
+  - Raises =Exception("No git directory.")= if =required=True= (default).
+  - Returns =None= if =required=False=.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_find(path=".", required=True):
+      """Find the root repository directory containing a .git directory.
+
+      Walks up from path towards filesystem root. If found, returns GitRepository(path).
+      If no git directory is found:
+      - raises Exception("No git directory.") if required is True (default).
+      - returns None if required is False.
+      """
       path = os.path.realpath(path)
 
       if os.path.isdir(os.path.join(path, ".git")):
