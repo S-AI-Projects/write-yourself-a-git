@@ -1317,6 +1317,12 @@ dead, lookup "graphviz online" in your favorite search engine)
                      help="Commit to start at.")
 #+END_SRC
 
+The log bridge and rendering function =log_graphviz= construct the commit graph.
+Their contract and argument preservation properties are:
+- *Path with spaces*: Repository discovery and file operations preserve exact directory paths containing spaces without splitting.
+- *Quoting & Special Characters*: Commit messages containing quotes, backslashes, or wildcard symbols are safely escaped for Graphviz node labels.
+- *Argument Boundaries & Wildcards*: Quoted arguments containing wildcard characters (such as ='*'=) are passed without shell expansion; invalid or nonexistent references are rejected without modifying any repository state.
+
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_log(args):
       repo = repo_find()
@@ -1327,7 +1333,7 @@ dead, lookup "graphviz online" in your favorite search engine)
       print("}")
 
   def log_graphviz(repo, sha, seen):
-
+      """Traverse commit DAG and print Graphviz nodes/edges preserving quoted boundaries."""
       if sha in seen:
           return
       seen.add(sha)
