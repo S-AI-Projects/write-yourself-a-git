@@ -2249,10 +2249,28 @@ on whether or not =name= is provided.
             show_ref(repo, refs["tags"], with_hash=False)
 #+END_SRC
 
-And we just need one more function to actually create the tag:
+And we just need one more function to actually create the tag.
+Its contract specifies that the tag name and target reference must be
+non-empty strings, with =ref= defaulting to ="HEAD"=.  The
+=create_tag_object= flag controls whether to produce an annotated tag
+object or a lightweight reference:
 
 #+begin_src python :tangle libwyag.py
-  def tag_create(repo, name, ref, create_tag_object=False):
+  def tag_create(repo, name, ref="HEAD", create_tag_object=False):
+      """Create a new tag reference in the repository.
+
+      Contract:
+      - repo: GitRepository object where the tag will be created.
+      - name: Non-empty string tag name. Raises ValueError if empty or whitespace.
+      - ref: String reference or object identifier (defaults to "HEAD"). Raises ValueError if empty or whitespace.
+      - create_tag_object: Boolean flag. If True, creates an annotated tag object (GitTag)
+        and references it; if False, creates a lightweight tag directly referencing the target object.
+      """
+      if not name or not str(name).strip():
+          raise ValueError("Tag name cannot be empty.")
+      if not ref or not str(ref).strip():
+          raise ValueError("Reference cannot be empty.")
+
       # get the GitObject from the object reference
       sha = object_find(repo, ref)
 

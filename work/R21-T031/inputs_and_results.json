@@ -1,0 +1,121 @@
+{
+  "cases_executed": 8,
+  "tool_versions": {
+    "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "git": "git version 2.55.0",
+    "wyag_path": "/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag"
+  },
+  "native_test_names": [
+    "Create repos",
+    "status",
+    "hash-object",
+    "hash-object -w",
+    "cat-file",
+    "cat-file with long hash",
+    "Create commit",
+    "cat-file on commit object without indirection",
+    "cat-file on tree object redirected from commit",
+    "Add some directories and commits",
+    "ls-tree",
+    "checkout",
+    "rev-parse",
+    "ls-files",
+    "gitignore"
+  ],
+  "results": [
+    {
+      "case": "1: ordinary-success-lightweight-tag",
+      "arguments": {
+        "name": "v1.0-light",
+        "ref": "HEAD",
+        "create_tag_object": false
+      },
+      "exit_status": 0,
+      "before_state": "refs/tags/v1.0-light exists: False",
+      "after_state": "refs/tags/v1.0-light exists: True, sha: 23baeb430ecd3d5c4c32ef6eedcdd56d450adb07",
+      "passed": true
+    },
+    {
+      "case": "2: ordinary-success-cli-invocation",
+      "arguments": [
+        "wyag",
+        "tag",
+        "v1.1-cli",
+        "HEAD"
+      ],
+      "exit_status": 0,
+      "stdout": "",
+      "after_state": "refs/tags/v1.1-cli exists: True",
+      "passed": true
+    },
+    {
+      "case": "3: ordinary-success-annotated-tag",
+      "arguments": {
+        "name": "v2.0-annotated",
+        "ref": "HEAD",
+        "create_tag_object": true
+      },
+      "exit_status": 0,
+      "before_state": "refs/tags/v2.0-annotated exists: False",
+      "after_state": "refs/tags/v2.0-annotated exists: True, tag_sha: 647251a7d5cf571a0ef3fdce2f6af7424367f836",
+      "passed": true
+    },
+    {
+      "case": "4: failure-empty-tag-name",
+      "arguments": {
+        "name": "",
+        "ref": "HEAD"
+      },
+      "exit_status": 1,
+      "expected_error": "Tag name cannot be empty.",
+      "actual_error": "Tag name cannot be empty.",
+      "passed": true
+    },
+    {
+      "case": "5: failure-whitespace-tag-name",
+      "arguments": {
+        "name": "   ",
+        "ref": "HEAD"
+      },
+      "exit_status": 1,
+      "expected_error": "Tag name cannot be empty.",
+      "actual_error": "Tag name cannot be empty.",
+      "passed": true
+    },
+    {
+      "case": "6: failure-none-tag-name",
+      "arguments": {
+        "name": null,
+        "ref": "HEAD"
+      },
+      "exit_status": 1,
+      "expected_error": "Tag name cannot be empty.",
+      "actual_error": "Tag name cannot be empty.",
+      "passed": true
+    },
+    {
+      "case": "7: failure-empty-ref",
+      "arguments": {
+        "name": "v3.0-fail",
+        "ref": ""
+      },
+      "exit_status": 1,
+      "expected_error": "Reference cannot be empty.",
+      "actual_error": "Reference cannot be empty.",
+      "after_state": "Tag was not created",
+      "passed": true
+    },
+    {
+      "case": "8: failure-nonexistent-ref",
+      "arguments": {
+        "name": "v4.0-fail",
+        "ref": "nonexistent-sha-or-branch"
+      },
+      "exit_status": 1,
+      "expected_error": "No such reference nonexistent-sha-or-branch.",
+      "actual_error": "No such reference nonexistent-sha-or-branch.",
+      "after_state": "Tag was not created",
+      "passed": true
+    }
+  ]
+}
