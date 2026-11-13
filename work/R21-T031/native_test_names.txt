@@ -1,0 +1,15 @@
+Create repos
+status
+hash-object
+hash-object -w
+cat-file
+cat-file with long hash
+Create commit
+cat-file on commit object without indirection
+cat-file on tree object redirected from commit
+Add some directories and commits
+ls-tree
+checkout
+rev-parse
+ls-files
+gitignore
