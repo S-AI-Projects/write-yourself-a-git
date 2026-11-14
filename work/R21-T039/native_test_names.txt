@@ -4,10 +4,10 @@ hash-object
 hash-object -w
 cat-file
 cat-file with long hash
-Create commit
+Create commit (git only, nothing is tested)
 cat-file on commit object without indirection
 cat-file on tree object redirected from commit
-Add some directories and commits
+Add some directories and commits (git only, nothing is tested)
 ls-tree
 checkout
 rev-parse

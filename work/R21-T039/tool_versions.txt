@@ -1,0 +1,2 @@
+git: git version 2.55.0
+python: 3.12.16
