@@ -1,0 +1,106 @@
+{
+  "cases_executed": 7,
+  "tool_versions": {
+    "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "git": "git version 2.55.0",
+    "wyag_path": "/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag"
+  },
+  "native_test_names": [
+    "Create repos",
+    "status",
+    "hash-object",
+    "hash-object -w",
+    "cat-file",
+    "cat-file with long hash",
+    "Create commit",
+    "cat-file on commit object without indirection",
+    "cat-file on tree object redirected from commit",
+    "Add some directories and commits",
+    "ls-tree",
+    "checkout",
+    "rev-parse",
+    "ls-files",
+    "gitignore"
+  ],
+  "results": [
+    {
+      "case": "1: minimum-arguments-without-repo",
+      "arguments": {
+        "fd": "notes.txt stream",
+        "fmt": "b'blob'",
+        "repo": "None"
+      },
+      "exit_status": 0,
+      "expected_sha": "ef44cc84b43281c994f59597f15f22ce19b38047",
+      "actual_sha": "ef44cc84b43281c994f59597f15f22ce19b38047",
+      "object_written_to_disk": false,
+      "passed": true
+    },
+    {
+      "case": "2: cli-hash-object-minimum-arguments",
+      "arguments": [
+        "wyag",
+        "hash-object",
+        "notes.txt"
+      ],
+      "exit_status": 0,
+      "stdout": "ef44cc84b43281c994f59597f15f22ce19b38047",
+      "passed": true
+    },
+    {
+      "case": "3: optional-argument-repo-exercised",
+      "arguments": {
+        "fd": "BytesIO stream",
+        "fmt": "b'blob'",
+        "repo": "GitRepository"
+      },
+      "exit_status": 0,
+      "sha": "99e91746b0b3139810876f05c67d1891f61d8257",
+      "before_state": "object exists: False",
+      "after_state": "object exists: True",
+      "passed": true
+    },
+    {
+      "case": "4: cli-hash-object-with-write-flag",
+      "arguments": [
+        "wyag",
+        "hash-object",
+        "-w",
+        "notes.txt"
+      ],
+      "exit_status": 0,
+      "stdout": "ef44cc84b43281c994f59597f15f22ce19b38047",
+      "object_written": true,
+      "passed": true
+    },
+    {
+      "case": "5: argument-boundary-string-fmt",
+      "arguments": {
+        "fmt": "'blob' (str)"
+      },
+      "exit_status": 0,
+      "sha": "ef44cc84b43281c994f59597f15f22ce19b38047",
+      "passed": true
+    },
+    {
+      "case": "6: documented-failure-unknown-type",
+      "arguments": {
+        "fmt": "b'invalid_unknown_type'"
+      },
+      "exit_status": 1,
+      "expected_error": "Unknown type b'invalid_unknown_type'!",
+      "actual_error": "Unknown type b'invalid_unknown_type'!",
+      "passed": true
+    },
+    {
+      "case": "7: documented-failure-missing-required-argument",
+      "arguments": {
+        "fd": "notes.txt"
+      },
+      "exit_status": 1,
+      "expected_error": "missing 1 required positional argument: 'fmt'",
+      "actual_error": "object_hash() missing 1 required positional argument: 'fmt'",
+      "passed": true
+    }
+  ]
+}

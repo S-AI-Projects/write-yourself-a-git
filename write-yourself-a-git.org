@@ -1053,13 +1053,29 @@ bridge function:
           print(sha)
 #+END_SRC
 
-The actual implementation is also trivial.  The =repo= argument is
-optional, and the object isn't written if it is =None= (this is
-handled in =object_write()=, above):
+The actual implementation is also trivial.  Its argument contract
+accepts a readable binary stream =fd= and format =fmt= as required
+arguments, with the repository =repo= being optional (defaulting to
+=None=).  When =repo= is omitted or =None=, the hash is computed
+without writing to the database (handled in =object_write()=).
+Unsupported or invalid format types raise an exception:
 
 #+BEGIN_SRC python :tangle libwyag.py
     def object_hash(fd, fmt, repo=None):
-        """ Hash object, writing it to repo if provided."""
+        """Hash object, writing it to repo if provided.
+
+        Argument boundaries:
+        - fd: Open readable binary stream / file-like object.
+        - fmt: Bytes or string representing the object format (b'blob', b'commit', b'tree', b'tag').
+        - repo: Optional GitRepository. If provided, writes the object to the database;
+                if None, computes the hash without writing.
+
+        Raises:
+        - Exception: If fmt is not one of the supported object formats.
+        """
+        if isinstance(fmt, str):
+            fmt = fmt.encode()
+
         data = fd.read()
 
         # Choose constructor according to fmt argument
