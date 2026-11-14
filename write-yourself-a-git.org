@@ -2029,10 +2029,16 @@ A wrapper function:
       tree_checkout(repo, obj, os.path.realpath(args.path))
 #+END_SRC
 
-And a function to do the actual work:
+And a function to do the actual work.  The destination path must be an
+existing directory.  If given a non-existent or non-directory path, it fails
+with a diagnostic error indicating the target is not a directory, which is
+resolved by creating the directory before checking out:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def tree_checkout(repo, tree, path):
+      if not os.path.isdir(path):
+          raise Exception(f"Checkout destination '{path}' is not a directory.")
+
       for item in tree.items:
           obj = object_read(repo, item.sha)
           dest = os.path.join(path, item.path)
@@ -2041,9 +2047,10 @@ And a function to do the actual work:
               os.mkdir(dest)
               tree_checkout(repo, obj, dest)
           elif obj.fmt == b'blob':
-              # @TODO Support symlinks (identified by mode 12****)
               with open(dest, 'wb') as f:
                   f.write(obj.blobdata)
+          else:
+              raise Exception(f"Cannot checkout object format {obj.fmt} at '{dest}'.")
 #+END_SRC
 
 * Refs, tags and branches

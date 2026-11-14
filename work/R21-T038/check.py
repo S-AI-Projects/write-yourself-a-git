@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from datetime import datetime, timezone
 import json
 import os
 import shutil
@@ -83,7 +82,7 @@ def setup_temp_repo(work_dir):
 
 
 def run_checks():
-    work_dir = tempfile.mkdtemp(prefix="wyag_commit_create_test_")
+    work_dir = tempfile.mkdtemp(prefix="wyag_tree_checkout_test_")
     results = []
     cases_executed = 0
 
@@ -92,93 +91,85 @@ def run_checks():
         repo = libwyag.GitRepository(repo_path)
 
         tree_sha = subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], cwd=repo_path, text=True, env=env).strip()
-        author = "Pritpal Singh <pritpal@example.com>"
-        ts = datetime(2026, 11, 14, 0, 0, 0, tzinfo=timezone.utc)
-        message = "Tested usage example root commit"
+        tree_obj = libwyag.object_read(repo, tree_sha)
 
-        commit_sha1 = libwyag.commit_create(repo, tree_sha, None, author, ts, message)
-        cases_executed += 1
-
-        assert len(commit_sha1) == 40
-        obj1 = libwyag.object_read(repo, commit_sha1)
-        assert obj1.fmt == b"commit"
-        assert obj1.kvlm[b"tree"] == tree_sha.encode("ascii")
-        assert b"parent" not in obj1.kvlm
-        assert obj1.kvlm[None] == b"Tested usage example root commit\n"
-
-        git_cat = subprocess.check_output(["git", "cat-file", "-p", commit_sha1], cwd=repo_path, text=True, env=env)
-        assert f"tree {tree_sha}" in git_cat
-        assert message in git_cat
-
-        results.append({
-            "case": "1: tested_usage_example_root_commit",
-            "arguments": {
-                "tree": tree_sha,
-                "parent": None,
-                "author": author,
-                "timestamp": str(ts),
-                "message": message
-            },
-            "exit_status": 0,
-            "commit_sha": commit_sha1,
-            "state_verified": True,
-            "passed": True
-        })
-
-        message2 = "Second commit with parent"
-        commit_sha2 = libwyag.commit_create(repo, tree_sha, commit_sha1, author, ts, message2)
-        cases_executed += 1
-
-        obj2 = libwyag.object_read(repo, commit_sha2)
-        assert obj2.kvlm[b"parent"] == commit_sha1.encode("ascii")
-
-        git_cat2 = subprocess.check_output(["git", "cat-file", "-p", commit_sha2], cwd=repo_path, text=True, env=env)
-        assert f"parent {commit_sha1}" in git_cat2
-
-        results.append({
-            "case": "2: commit_with_parent",
-            "arguments": {
-                "tree": tree_sha,
-                "parent": commit_sha1,
-                "author": author,
-                "timestamp": str(ts),
-                "message": message2
-            },
-            "exit_status": 0,
-            "commit_sha": commit_sha2,
-            "state_verified": True,
-            "passed": True
-        })
-
-        tree_err = None
+        missing_dest = os.path.join(work_dir, "nonexistent_checkout_dir")
+        failure_err = None
         try:
-            libwyag.commit_create(repo, None, None, author, ts, "Invalid tree")
+            libwyag.tree_checkout(repo, tree_obj, missing_dest)
         except Exception as e:
-            tree_err = str(e)
+            failure_err = str(e)
         cases_executed += 1
-        assert tree_err is not None
+
+        expected_failure_msg = f"Checkout destination '{missing_dest}' is not a directory."
+        assert failure_err == expected_failure_msg, f"Expected '{expected_failure_msg}', got '{failure_err}'"
+        assert not os.path.exists(missing_dest)
 
         results.append({
-            "case": "3: failure_none_tree",
-            "arguments": {"tree": None},
+            "case": "1: failure_branch_nonexistent_destination",
+            "arguments": {"path": missing_dest},
             "exit_status": 1,
-            "actual_error": tree_err,
+            "actual_error": failure_err,
+            "diagnostic_explanation": "Destination directory does not exist; tree_checkout requires caller to provide an existing directory.",
             "passed": True
         })
 
-        ts_err = None
-        try:
-            libwyag.commit_create(repo, tree_sha, None, author, "invalid_timestamp", "Invalid ts")
-        except Exception as e:
-            ts_err = str(e)
+        os.makedirs(missing_dest, exist_ok=True)
+        libwyag.tree_checkout(repo, tree_obj, missing_dest)
         cases_executed += 1
-        assert ts_err is not None
+
+        checked_out_notes = os.path.join(missing_dest, "notes.txt")
+        checked_out_space = os.path.join(missing_dest, "second file with space.txt")
+        assert os.path.isfile(checked_out_notes)
+        assert os.path.isfile(checked_out_space)
+
+        with open(checked_out_notes, "r", encoding="utf-8") as f:
+            assert f.read() == "alpha\n"
+        with open(checked_out_space, "r", encoding="utf-8") as f:
+            assert f.read() == "second file content\n"
 
         results.append({
-            "case": "4: failure_invalid_timestamp_type",
-            "arguments": {"timestamp": "invalid_timestamp"},
+            "case": "2: corrected_invocation_succeeds",
+            "arguments": {"path": missing_dest},
+            "exit_status": 0,
+            "state_verification": "Both files successfully extracted with matching contents",
+            "passed": True
+        })
+
+        regular_file_dest = os.path.join(work_dir, "dest_is_file.txt")
+        with open(regular_file_dest, "w", encoding="utf-8") as f:
+            f.write("regular file\n")
+
+        file_collision_err = None
+        try:
+            libwyag.tree_checkout(repo, tree_obj, regular_file_dest)
+        except Exception as e:
+            file_collision_err = str(e)
+        cases_executed += 1
+
+        expected_collision_msg = f"Checkout destination '{regular_file_dest}' is not a directory."
+        assert file_collision_err == expected_collision_msg
+
+        results.append({
+            "case": "3: failure_branch_file_instead_of_dir",
+            "arguments": {"path": regular_file_dest},
             "exit_status": 1,
-            "actual_error": ts_err,
+            "actual_error": file_collision_err,
+            "diagnostic_explanation": "Target path exists but is a regular file; tree_checkout requires a directory.",
+            "passed": True
+        })
+
+        wyag_bin = os.path.join(REPO_ROOT, "wyag")
+        cli_dest = os.path.join(work_dir, "cli_checkout_dir")
+        cli_proc = subprocess.run([sys.executable, wyag_bin, "checkout", "HEAD", cli_dest], cwd=repo_path, capture_output=True, text=True, env=env)
+        cases_executed += 1
+        assert cli_proc.returncode == 0
+        assert os.path.isfile(os.path.join(cli_dest, "notes.txt"))
+
+        results.append({
+            "case": "4: cli_checkout_invocation",
+            "arguments": ["wyag", "checkout", "HEAD", cli_dest],
+            "exit_status": cli_proc.returncode,
             "passed": True
         })
 
@@ -189,7 +180,7 @@ def run_checks():
         for res in results:
             print(f"  [PASS] {res['case']}: exit_status={res['exit_status']}")
 
-        out_dir = os.path.join(REPO_ROOT, "work", "R21-T037")
+        out_dir = os.path.join(REPO_ROOT, "work", "R21-T038")
         os.makedirs(out_dir, exist_ok=True)
 
         tool_versions = get_tool_versions()
@@ -210,7 +201,7 @@ def run_checks():
                 "results": results
             }, f, indent=2)
 
-        print("\nAll checks completed successfully and artifacts saved to work/R21-T037/")
+        print("\nAll checks completed successfully and artifacts saved to work/R21-T038/")
         return 0
 
     finally:
