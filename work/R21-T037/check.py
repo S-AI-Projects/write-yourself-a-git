@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from datetime import datetime, timezone
 import json
 import os
 import shutil
@@ -68,12 +69,7 @@ def setup_temp_repo(work_dir):
     with open(space_file, "w", encoding="utf-8") as f:
         f.write("second file content\n")
 
-    sub_dir = os.path.join(repo_path, "subdir")
-    os.makedirs(sub_dir, exist_ok=True)
-    with open(os.path.join(sub_dir, "nested.txt"), "w", encoding="utf-8") as f:
-        f.write("nested content\n")
-
-    subprocess.run(["git", "add", "notes.txt", "second file with space.txt", "subdir/nested.txt"], cwd=repo_path, check=True, env=env)
+    subprocess.run(["git", "add", "notes.txt", "second file with space.txt"], cwd=repo_path, check=True, env=env)
     subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=repo_path, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
 
     with open(space_file, "w", encoding="utf-8") as f:
@@ -87,7 +83,7 @@ def setup_temp_repo(work_dir):
 
 
 def run_checks():
-    work_dir = tempfile.mkdtemp(prefix="wyag_tree_to_dict_test_")
+    work_dir = tempfile.mkdtemp(prefix="wyag_commit_create_test_")
     results = []
     cases_executed = 0
 
@@ -95,86 +91,94 @@ def run_checks():
         repo_path, env = setup_temp_repo(work_dir)
         repo = libwyag.GitRepository(repo_path)
 
-        res_dict = libwyag.tree_to_dict(repo, "HEAD")
+        tree_sha = subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], cwd=repo_path, text=True, env=env).strip()
+        author = "Pritpal Singh <pritpal@example.com>"
+        ts = datetime(2026, 11, 14, 0, 0, 0, tzinfo=timezone.utc)
+        message = "Tested usage example root commit"
+
+        commit_sha1 = libwyag.commit_create(repo, tree_sha, None, author, ts, message)
         cases_executed += 1
 
-        git_ls = subprocess.check_output(["git", "ls-tree", "-r", "HEAD"], cwd=repo_path, text=True, env=env).strip()
-        expected_dict = {}
-        for line in git_ls.splitlines():
-            parts = line.split()
-            sha = parts[2]
-            path = line.split("\t", 1)[1]
-            expected_dict[path] = sha
+        assert len(commit_sha1) == 40
+        obj1 = libwyag.object_read(repo, commit_sha1)
+        assert obj1.fmt == b"commit"
+        assert obj1.kvlm[b"tree"] == tree_sha.encode("ascii")
+        assert b"parent" not in obj1.kvlm
+        assert obj1.kvlm[None] == b"Tested usage example root commit\n"
 
-        assert res_dict == expected_dict, f"Dict mismatch: {res_dict} != {expected_dict}"
-        assert "notes.txt" in res_dict
-        assert "second file with space.txt" in res_dict
-        assert "subdir/nested.txt" in res_dict
+        git_cat = subprocess.check_output(["git", "cat-file", "-p", commit_sha1], cwd=repo_path, text=True, env=env)
+        assert f"tree {tree_sha}" in git_cat
+        assert message in git_cat
 
         results.append({
-            "case": "1: tree_to_dict_recursive_characterization",
-            "arguments": {"ref": "HEAD", "prefix": ""},
+            "case": "1: tested_usage_example_root_commit",
+            "arguments": {
+                "tree": tree_sha,
+                "parent": None,
+                "author": author,
+                "timestamp": str(ts),
+                "message": message
+            },
             "exit_status": 0,
-            "paths_matched": sorted(list(res_dict.keys())),
+            "commit_sha": commit_sha1,
+            "state_verified": True,
             "passed": True
         })
 
-        sub_sha = subprocess.check_output(["git", "rev-parse", "HEAD:subdir"], cwd=repo_path, text=True, env=env).strip()
-        sub_dict = libwyag.tree_to_dict(repo, sub_sha, prefix="custom_prefix")
+        message2 = "Second commit with parent"
+        commit_sha2 = libwyag.commit_create(repo, tree_sha, commit_sha1, author, ts, message2)
         cases_executed += 1
-        assert "custom_prefix/nested.txt" in sub_dict
-        assert sub_dict["custom_prefix/nested.txt"] == expected_dict["subdir/nested.txt"]
+
+        obj2 = libwyag.object_read(repo, commit_sha2)
+        assert obj2.kvlm[b"parent"] == commit_sha1.encode("ascii")
+
+        git_cat2 = subprocess.check_output(["git", "cat-file", "-p", commit_sha2], cwd=repo_path, text=True, env=env)
+        assert f"parent {commit_sha1}" in git_cat2
 
         results.append({
-            "case": "2: tree_to_dict_prefix_and_subtree",
-            "arguments": {"ref": sub_sha, "prefix": "custom_prefix"},
+            "case": "2: commit_with_parent",
+            "arguments": {
+                "tree": tree_sha,
+                "parent": commit_sha1,
+                "author": author,
+                "timestamp": str(ts),
+                "message": message2
+            },
             "exit_status": 0,
-            "paths_matched": list(sub_dict.keys()),
+            "commit_sha": commit_sha2,
+            "state_verified": True,
             "passed": True
         })
 
-        index = libwyag.index_read(repo)
-        libwyag.cmd_status_head_index(repo, index)
-        cases_executed += 1
-
-        results.append({
-            "case": "3: tree_to_dict_status_integration",
-            "arguments": {"command": "cmd_status_head_index"},
-            "exit_status": 0,
-            "passed": True
-        })
-
-        nonexistent_err = None
+        tree_err = None
         try:
-            libwyag.tree_to_dict(repo, "missing_ref_abc123")
+            libwyag.commit_create(repo, None, None, author, ts, "Invalid tree")
         except Exception as e:
-            nonexistent_err = str(e)
+            tree_err = str(e)
         cases_executed += 1
-        assert nonexistent_err is not None and "No such reference" in nonexistent_err
+        assert tree_err is not None
 
         results.append({
-            "case": "4: tree_to_dict_nonexistent_ref_failure",
-            "arguments": {"ref": "missing_ref_abc123"},
+            "case": "3: failure_none_tree",
+            "arguments": {"tree": None},
             "exit_status": 1,
-            "expected_error": "No such reference missing_ref_abc123.",
-            "actual_error": nonexistent_err,
+            "actual_error": tree_err,
             "passed": True
         })
 
-        notes_blob_sha = expected_dict["notes.txt"]
-        blob_err = None
+        ts_err = None
         try:
-            libwyag.tree_to_dict(repo, notes_blob_sha)
+            libwyag.commit_create(repo, tree_sha, None, author, "invalid_timestamp", "Invalid ts")
         except Exception as e:
-            blob_err = str(e)
+            ts_err = str(e)
         cases_executed += 1
-        assert blob_err is not None
+        assert ts_err is not None
 
         results.append({
-            "case": "5: tree_to_dict_non_tree_object_failure",
-            "arguments": {"ref": notes_blob_sha},
+            "case": "4: failure_invalid_timestamp_type",
+            "arguments": {"timestamp": "invalid_timestamp"},
             "exit_status": 1,
-            "actual_error": blob_err,
+            "actual_error": ts_err,
             "passed": True
         })
 
@@ -185,7 +189,7 @@ def run_checks():
         for res in results:
             print(f"  [PASS] {res['case']}: exit_status={res['exit_status']}")
 
-        out_dir = os.path.join(REPO_ROOT, "work", "R21-T036")
+        out_dir = os.path.join(REPO_ROOT, "work", "R21-T037")
         os.makedirs(out_dir, exist_ok=True)
 
         tool_versions = get_tool_versions()
@@ -206,7 +210,7 @@ def run_checks():
                 "results": results
             }, f, indent=2)
 
-        print("\nAll checks completed successfully and artifacts saved to work/R21-T036/")
+        print("\nAll checks completed successfully and artifacts saved to work/R21-T037/")
         return 0
 
     finally:
