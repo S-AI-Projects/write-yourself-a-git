@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+import configparser
 import json
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
+from unittest.mock import patch
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if REPO_ROOT not in sys.path:
@@ -84,128 +86,148 @@ def setup_temp_repo(work_dir):
     with open(notes_file, "w", encoding="utf-8") as f:
         f.write("alpha unstaged modified\n")
 
-    # Add an untracked file to test that shell expansion does not affect unrelated untracked files
-    untracked_file = os.path.join(repo_path, "untracked wildcard test.txt")
-    with open(untracked_file, "w", encoding="utf-8") as f:
-        f.write("untracked file content\n")
-
     return repo_path, env
 
 
 def run_checks():
-    work_dir = tempfile.mkdtemp(prefix="wyag_ls_files_test_")
+    work_dir = tempfile.mkdtemp(prefix="wyag_gitconfig_user_test_")
     results = []
     cases_executed = 0
 
     try:
         repo_path, env = setup_temp_repo(work_dir)
-        wyag_bin = os.path.join(REPO_ROOT, "wyag")
+        temp_home = os.path.join(work_dir, "isolated_home")
+        os.makedirs(temp_home, exist_ok=True)
+
+        # Isolated environment variables pointing to temporary directory
+        isolated_env = env.copy()
+        isolated_env["HOME"] = temp_home
+        isolated_env["XDG_CONFIG_HOME"] = os.path.join(temp_home, ".config")
+
+        # Stub external command execution using patch
+        def stub_external_command(*args, **kwargs):
+            return subprocess.CompletedProcess(args=args, returncode=0, stdout="", stderr="")
 
         # -------------------------------------------------------------
-        # Test Case 1: Path containing spaces (assert exact argument boundary)
+        # Test Case 1: Success branch with local config object
         # -------------------------------------------------------------
-        arg_space = "second file with space.txt"
-        cli_proc1 = subprocess.run([sys.executable, wyag_bin, "ls-files", arg_space], cwd=repo_path, capture_output=True, text=True, env=env)
+        cfg_success = configparser.ConfigParser()
+        cfg_success["user"] = {
+            "name": "Deterministic Author",
+            "email": "author@deterministic.local"
+        }
+        res1 = libwyag.gitconfig_user_get(cfg_success)
         cases_executed += 1
-
-        git_out1 = subprocess.check_output(["git", "ls-files", arg_space], cwd=repo_path, text=True, env=env).strip()
-
-        assert cli_proc1.returncode == 0, f"wyag ls-files with spaced arg failed: {cli_proc1.stderr}"
-        assert cli_proc1.stdout.strip() == arg_space, f"Expected '{arg_space}', got '{cli_proc1.stdout.strip()}'"
-        assert cli_proc1.stdout.strip() == git_out1, f"Mismatch with git ls-files: wyag='{cli_proc1.stdout.strip()}', git='{git_out1}'"
+        expected1 = "Deterministic Author <author@deterministic.local>"
+        assert res1 == expected1, f"Expected '{expected1}', got '{res1}'"
 
         results.append({
-            "case": "1: preserve-quoted-path-with-spaces",
-            "arguments": ["wyag", "ls-files", arg_space],
-            "exit_status": cli_proc1.returncode,
-            "stdout": cli_proc1.stdout.strip(),
-            "expected_stdout": git_out1,
+            "case": "1: success-branch-with-local-config",
+            "arguments": {"user.name": "Deterministic Author", "user.email": "author@deterministic.local"},
+            "exit_status": 0,
+            "actual_result": res1,
+            "expected_result": expected1,
             "passed": True
         })
 
         # -------------------------------------------------------------
-        # Test Case 2: Argument containing a wildcard character
-        # Assert exact argument boundaries & shell expansion does not affect unrelated untracked files
+        # Test Case 2: Success branch via file-based gitconfig_read under isolated home
         # -------------------------------------------------------------
-        wildcard_arg = "*.txt"
-        cli_proc2 = subprocess.run([sys.executable, wyag_bin, "ls-files", wildcard_arg], cwd=repo_path, capture_output=True, text=True, env=env)
+        gitconfig_file = os.path.join(temp_home, ".gitconfig")
+        with open(gitconfig_file, "w", encoding="utf-8") as f:
+            f.write("[user]\n    name = File Author\n    email = file@example.com\n")
+
+        with patch.dict(os.environ, isolated_env, clear=False), \
+             patch("os.path.expanduser", side_effect=lambda p: p.replace("~", temp_home)), \
+             patch("subprocess.run", side_effect=stub_external_command):
+            cfg_read = libwyag.gitconfig_read()
+            res2 = libwyag.gitconfig_user_get(cfg_read)
         cases_executed += 1
-
-        git_out2 = subprocess.check_output(["git", "ls-files", wildcard_arg], cwd=repo_path, text=True, env=env).strip()
-
-        assert cli_proc2.returncode == 0, f"wyag ls-files with wildcard failed: {cli_proc2.stderr}"
-        wyag_files2 = set(cli_proc2.stdout.strip().splitlines())
-        git_files2 = set(git_out2.splitlines())
-
-        # Assert only index entries are returned, and untracked file is NOT included
-        assert "untracked wildcard test.txt" not in wyag_files2, "Untracked file unexpectedly included in ls-files output"
-        assert "notes.txt" in wyag_files2, "notes.txt missing from wildcard output"
-        assert "second file with space.txt" in wyag_files2, "second file with space.txt missing from wildcard output"
-        assert wyag_files2 == git_files2, f"Set mismatch with git ls-files: {wyag_files2} vs {git_files2}"
+        expected2 = "File Author <file@example.com>"
+        assert res2 == expected2, f"Expected '{expected2}', got '{res2}'"
 
         results.append({
-            "case": "2: wildcard-filtering-without-unrelated-file-leak",
-            "arguments": ["wyag", "ls-files", wildcard_arg],
-            "exit_status": cli_proc2.returncode,
-            "stdout": sorted(list(wyag_files2)),
-            "untracked_file_excluded": True,
+            "case": "2: success-branch-file-based-read-isolated-home",
+            "arguments": {"config_path": gitconfig_file},
+            "exit_status": 0,
+            "actual_result": res2,
+            "expected_result": expected2,
             "passed": True
         })
 
         # -------------------------------------------------------------
-        # Test Case 3: Combined path containing space and wildcard
+        # Test Case 3: Missing-dependency branch - Missing [user] section
         # -------------------------------------------------------------
-        combined_arg = "*with space*"
-        cli_proc3 = subprocess.run([sys.executable, wyag_bin, "ls-files", combined_arg], cwd=repo_path, capture_output=True, text=True, env=env)
+        cfg_no_user = configparser.ConfigParser()
+        cfg_no_user["core"] = {"repositoryformatversion": "0"}
+        res3 = libwyag.gitconfig_user_get(cfg_no_user)
         cases_executed += 1
-
-        git_out3 = subprocess.check_output(["git", "ls-files", combined_arg], cwd=repo_path, text=True, env=env).strip()
-
-        assert cli_proc3.returncode == 0, f"wyag ls-files with combined arg failed: {cli_proc3.stderr}"
-        assert cli_proc3.stdout.strip() == "second file with space.txt", f"Unexpected output: {cli_proc3.stdout.strip()}"
-        assert cli_proc3.stdout.strip() == git_out3, f"Mismatch with git: {cli_proc3.stdout.strip()} != {git_out3}"
+        assert res3 is None, f"Expected None for missing [user] section, got '{res3}'"
 
         results.append({
-            "case": "3: combined-space-and-wildcard",
-            "arguments": ["wyag", "ls-files", combined_arg],
-            "exit_status": cli_proc3.returncode,
-            "stdout": cli_proc3.stdout.strip(),
+            "case": "3: missing-dependency-missing-user-section",
+            "arguments": {"sections": list(cfg_no_user.sections())},
+            "exit_status": 0,
+            "actual_result": res3,
+            "expected_result": None,
             "passed": True
         })
 
         # -------------------------------------------------------------
-        # Test Case 4: Default behavior without arguments
+        # Test Case 4: Missing-dependency branch - Missing email in [user]
         # -------------------------------------------------------------
-        cli_proc4 = subprocess.run([sys.executable, wyag_bin, "ls-files"], cwd=repo_path, capture_output=True, text=True, env=env)
+        cfg_no_email = configparser.ConfigParser()
+        cfg_no_email["user"] = {"name": "Author Without Email"}
+        res4 = libwyag.gitconfig_user_get(cfg_no_email)
         cases_executed += 1
-
-        git_out4 = subprocess.check_output(["git", "ls-files"], cwd=repo_path, text=True, env=env).strip()
-        assert set(cli_proc4.stdout.strip().splitlines()) == set(git_out4.splitlines()), "Default ls-files mismatch with git"
+        assert res4 is None, f"Expected None for missing email, got '{res4}'"
 
         results.append({
-            "case": "4: default-no-arguments",
-            "arguments": ["wyag", "ls-files"],
-            "exit_status": cli_proc4.returncode,
-            "stdout": cli_proc4.stdout.strip().splitlines(),
+            "case": "4: missing-dependency-missing-email",
+            "arguments": {"user_keys": list(cfg_no_email["user"].keys())},
+            "exit_status": 0,
+            "actual_result": res4,
+            "expected_result": None,
             "passed": True
         })
 
         # -------------------------------------------------------------
-        # Test Case 5: Documented failure - invoking outside a git repository
+        # Test Case 5: Missing-dependency branch - Missing name in [user]
         # -------------------------------------------------------------
-        empty_non_repo = os.path.join(work_dir, "non_repo_dir")
-        os.makedirs(empty_non_repo, exist_ok=True)
-        cli_proc5 = subprocess.run([sys.executable, wyag_bin, "ls-files"], cwd=empty_non_repo, capture_output=True, text=True, env=env)
+        cfg_no_name = configparser.ConfigParser()
+        cfg_no_name["user"] = {"email": "no-name@example.com"}
+        res5 = libwyag.gitconfig_user_get(cfg_no_name)
         cases_executed += 1
-
-        assert cli_proc5.returncode != 0, "Expected non-zero exit code outside git repo"
-        assert "No git directory" in cli_proc5.stderr or "No git directory" in cli_proc5.stdout, f"Expected 'No git directory' in error: {cli_proc5.stderr}"
+        assert res5 is None, f"Expected None for missing name, got '{res5}'"
 
         results.append({
-            "case": "5: documented-failure-outside-repository",
-            "arguments": ["wyag", "ls-files"],
-            "exit_status": cli_proc5.returncode,
-            "error_output": cli_proc5.stderr.strip() or cli_proc5.stdout.strip(),
+            "case": "5: missing-dependency-missing-name",
+            "arguments": {"user_keys": list(cfg_no_name["user"].keys())},
+            "exit_status": 0,
+            "actual_result": res5,
+            "expected_result": None,
+            "passed": True
+        })
+
+        # -------------------------------------------------------------
+        # Test Case 6: Missing-dependency branch - Empty config or None
+        # -------------------------------------------------------------
+        cfg_empty = configparser.ConfigParser()
+        res6a = libwyag.gitconfig_user_get(cfg_empty)
+        cases_executed += 1
+        assert res6a is None, f"Expected None for empty config, got '{res6a}'"
+
+        with patch("libwyag.gitconfig_read", return_value=configparser.ConfigParser()):
+            res6b = libwyag.gitconfig_user_get(None)
+        cases_executed += 1
+        assert res6b is None, f"Expected None for None config, got '{res6b}'"
+
+        results.append({
+            "case": "6: missing-dependency-empty-and-none-config",
+            "arguments": {"cfg_empty": "empty ConfigParser", "cfg_none": "None"},
+            "exit_status": 0,
+            "actual_result": {"empty": res6a, "none": res6b},
+            "expected_result": {"empty": None, "none": None},
             "passed": True
         })
 
@@ -217,8 +239,8 @@ def run_checks():
         for res in results:
             print(f"  [PASS] {res['case']}: exit_status={res['exit_status']}")
 
-        # Save artifacts in work/R21-T034/
-        out_dir = os.path.join(REPO_ROOT, "work", "R21-T034")
+        # Save artifacts in work/R21-T035/
+        out_dir = os.path.join(REPO_ROOT, "work", "R21-T035")
         os.makedirs(out_dir, exist_ok=True)
 
         tool_versions = get_tool_versions()
@@ -239,7 +261,7 @@ def run_checks():
                 "results": results
             }, f, indent=2)
 
-        print("\nAll checks completed successfully and artifacts saved to work/R21-T034/")
+        print("\nAll checks completed successfully and artifacts saved to work/R21-T035/")
         return 0
 
     finally:

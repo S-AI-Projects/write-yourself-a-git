@@ -3706,13 +3706,30 @@ read repo's config.
       return config
 #+end_src
 
-And just a simple function to grab, and format, the user identity:
+And just a simple function to grab, and format, the user identity.
+It returns a formatted string when user name and email are configured,
+or =None= on the missing-dependency branch when configuration is absent:
 
 #+begin_src python :tangle libwyag.py
-  def gitconfig_user_get(config):
-      if "user" in config:
-          if "name" in config["user"] and "email" in config["user"]:
-              return f"{config['user']['name']} <{config['user']['email']}>"
+  def gitconfig_user_get(config=None):
+      """Extract and format the user identity from git configuration.
+
+      Returns:
+      - 'Name <email>' if both 'name' and 'email' exist under the 'user' section.
+      - None on the missing-dependency branch if the user section or required keys are absent.
+      """
+      if config is None:
+          config = gitconfig_read()
+
+      if not config or "user" not in config:
+          return None
+
+      if "name" in config["user"] and "email" in config["user"]:
+          name = config["user"]["name"]
+          email = config["user"]["email"]
+          if name and email:
+              return f"{name} <{email}>"
+
       return None
 #+end_src
 
