@@ -1,0 +1,88 @@
+{
+  "cases_executed": 5,
+  "tool_versions": {
+    "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "git": "git version 2.55.0",
+    "wyag_path": "/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag"
+  },
+  "native_test_names": [
+    "Create repos",
+    "status",
+    "hash-object",
+    "hash-object -w",
+    "cat-file",
+    "cat-file with long hash",
+    "Create commit",
+    "cat-file on commit object without indirection",
+    "cat-file on tree object redirected from commit",
+    "Add some directories and commits",
+    "ls-tree",
+    "checkout",
+    "rev-parse",
+    "ls-files",
+    "gitignore"
+  ],
+  "results": [
+    {
+      "case": "1: preserve-quoted-path-with-spaces",
+      "arguments": [
+        "wyag",
+        "ls-files",
+        "second file with space.txt"
+      ],
+      "exit_status": 0,
+      "stdout": "second file with space.txt",
+      "expected_stdout": "second file with space.txt",
+      "passed": true
+    },
+    {
+      "case": "2: wildcard-filtering-without-unrelated-file-leak",
+      "arguments": [
+        "wyag",
+        "ls-files",
+        "*.txt"
+      ],
+      "exit_status": 0,
+      "stdout": [
+        "notes.txt",
+        "second file with space.txt"
+      ],
+      "untracked_file_excluded": true,
+      "passed": true
+    },
+    {
+      "case": "3: combined-space-and-wildcard",
+      "arguments": [
+        "wyag",
+        "ls-files",
+        "*with space*"
+      ],
+      "exit_status": 0,
+      "stdout": "second file with space.txt",
+      "passed": true
+    },
+    {
+      "case": "4: default-no-arguments",
+      "arguments": [
+        "wyag",
+        "ls-files"
+      ],
+      "exit_status": 0,
+      "stdout": [
+        "notes.txt",
+        "second file with space.txt"
+      ],
+      "passed": true
+    },
+    {
+      "case": "5: documented-failure-outside-repository",
+      "arguments": [
+        "wyag",
+        "ls-files"
+      ],
+      "exit_status": 1,
+      "error_output": "Traceback (most recent call last):\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag\", line 4, in <module>\n    libwyag.main()\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 60, in main\n    case \"ls-files\"     : cmd_ls_files(args)\n                          ^^^^^^^^^^^^^^^^^^\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 1055, in cmd_ls_files\n    repo = repo_find()\n           ^^^^^^^^^^^\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 214, in repo_find\n    return repo_find(parent, required)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 214, in repo_find\n    return repo_find(parent, required)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 214, in repo_find\n    return repo_find(parent, required)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  [Previous line repeated 5 more times]\n  File \"/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/libwyag.py\", line 209, in repo_find\n    raise Exception(\"No git directory.\")\nException: No git directory.",
+      "passed": true
+    }
+  ]
+}

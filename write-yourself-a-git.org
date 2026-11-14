@@ -520,7 +520,20 @@ create if doesn't already exist) and create the *git directory* inside
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_create(path):
-      """Create a new repository at path."""
+      """Create a new repository at path.
+
+      State transitions:
+      - Pre-state: The target path either does not exist, or is an existing directory
+        whose gitdir (.git) does not exist or is empty.
+      - Post-state: A GitRepository is returned with .git/ initialized (branches/,
+        objects/, refs/tags/, refs/heads/, description, HEAD, and config created).
+      - Invariant: Unrelated external files or pre-existing files in the worktree
+        outside .git/ must remain completely untouched.
+
+      Raises:
+      - Exception: If path exists and is not a directory.
+      - Exception: If path/.git exists and is not empty.
+      """
 
       repo = GitRepository(path, True)
 
@@ -1053,13 +1066,29 @@ bridge function:
           print(sha)
 #+END_SRC
 
-The actual implementation is also trivial.  The =repo= argument is
-optional, and the object isn't written if it is =None= (this is
-handled in =object_write()=, above):
+The actual implementation is also trivial.  Its argument contract
+accepts a readable binary stream =fd= and format =fmt= as required
+arguments, with the repository =repo= being optional (defaulting to
+=None=).  When =repo= is omitted or =None=, the hash is computed
+without writing to the database (handled in =object_write()=).
+Unsupported or invalid format types raise an exception:
 
 #+BEGIN_SRC python :tangle libwyag.py
     def object_hash(fd, fmt, repo=None):
-        """ Hash object, writing it to repo if provided."""
+        """Hash object, writing it to repo if provided.
+
+        Argument boundaries:
+        - fd: Open readable binary stream / file-like object.
+        - fmt: Bytes or string representing the object format (b'blob', b'commit', b'tree', b'tag').
+        - repo: Optional GitRepository. If provided, writes the object to the database;
+                if None, computes the hash without writing.
+
+        Raises:
+        - Exception: If fmt is not one of the supported object formats.
+        """
+        if isinstance(fmt, str):
+            fmt = fmt.encode()
+
         data = fd.read()
 
         # Choose constructor according to fmt argument
@@ -2249,10 +2278,28 @@ on whether or not =name= is provided.
             show_ref(repo, refs["tags"], with_hash=False)
 #+END_SRC
 
-And we just need one more function to actually create the tag:
+And we just need one more function to actually create the tag.
+Its contract specifies that the tag name and target reference must be
+non-empty strings, with =ref= defaulting to ="HEAD"=.  The
+=create_tag_object= flag controls whether to produce an annotated tag
+object or a lightweight reference:
 
 #+begin_src python :tangle libwyag.py
-  def tag_create(repo, name, ref, create_tag_object=False):
+  def tag_create(repo, name, ref="HEAD", create_tag_object=False):
+      """Create a new tag reference in the repository.
+
+      Contract:
+      - repo: GitRepository object where the tag will be created.
+      - name: Non-empty string tag name. Raises ValueError if empty or whitespace.
+      - ref: String reference or object identifier (defaults to "HEAD"). Raises ValueError if empty or whitespace.
+      - create_tag_object: Boolean flag. If True, creates an annotated tag object (GitTag)
+        and references it; if False, creates a lightweight tag directly referencing the target object.
+      """
+      if not name or not str(name).strip():
+          raise ValueError("Tag name cannot be empty.")
+      if not ref or not str(ref).strip():
+          raise ValueError("Reference cannot be empty.")
+
       # get the GitObject from the object reference
       sha = object_find(repo, ref)
 
@@ -2821,12 +2868,14 @@ produce more elegant code in C than in Python…)
 
 =git ls-files= displays the names of files in the staging area, with,
 as usual, a ton of options.  Our =ls-files= will be much simpler,
-/but/ we'll add a =--verbose= option that doesn't exist in git, just
-so we can display every single bit of info in the index file.
+supporting optional path and wildcard pattern filtering that preserves
+quoted argument boundaries, /plus/ a =--verbose= option that displays
+every single bit of info in the index file.
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("ls-files", help = "List all the stage files")
   argsp.add_argument("--verbose", action="store_true", help="Show everything.")
+  argsp.add_argument("path", nargs="*", default=[], help="Files or patterns to show (optional).")
 
   def cmd_ls_files(args):
       repo = repo_find()
@@ -2835,6 +2884,11 @@ so we can display every single bit of info in the index file.
           print(f"Index file format v{index.version}, containing {len(index.entries)} entries.")
 
       for e in index.entries:
+          if args.path:
+              # Filter by path or pattern, preserving exact argument boundaries
+              if not any(e.name == p or fnmatch(e.name, p) for p in args.path):
+                  continue
+
           print(e.name)
           if args.verbose:
               entry_type = { 0b1000: "regular file",
