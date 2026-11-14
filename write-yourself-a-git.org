@@ -520,7 +520,20 @@ create if doesn't already exist) and create the *git directory* inside
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_create(path):
-      """Create a new repository at path."""
+      """Create a new repository at path.
+
+      State transitions:
+      - Pre-state: The target path either does not exist, or is an existing directory
+        whose gitdir (.git) does not exist or is empty.
+      - Post-state: A GitRepository is returned with .git/ initialized (branches/,
+        objects/, refs/tags/, refs/heads/, description, HEAD, and config created).
+      - Invariant: Unrelated external files or pre-existing files in the worktree
+        outside .git/ must remain completely untouched.
+
+      Raises:
+      - Exception: If path exists and is not a directory.
+      - Exception: If path/.git exists and is not empty.
+      """
 
       repo = GitRepository(path, True)
 
@@ -1053,13 +1066,29 @@ bridge function:
           print(sha)
 #+END_SRC
 
-The actual implementation is also trivial.  The =repo= argument is
-optional, and the object isn't written if it is =None= (this is
-handled in =object_write()=, above):
+The actual implementation is also trivial.  Its argument contract
+accepts a readable binary stream =fd= and format =fmt= as required
+arguments, with the repository =repo= being optional (defaulting to
+=None=).  When =repo= is omitted or =None=, the hash is computed
+without writing to the database (handled in =object_write()=).
+Unsupported or invalid format types raise an exception:
 
 #+BEGIN_SRC python :tangle libwyag.py
     def object_hash(fd, fmt, repo=None):
-        """ Hash object, writing it to repo if provided."""
+        """Hash object, writing it to repo if provided.
+
+        Argument boundaries:
+        - fd: Open readable binary stream / file-like object.
+        - fmt: Bytes or string representing the object format (b'blob', b'commit', b'tree', b'tag').
+        - repo: Optional GitRepository. If provided, writes the object to the database;
+                if None, computes the hash without writing.
+
+        Raises:
+        - Exception: If fmt is not one of the supported object formats.
+        """
+        if isinstance(fmt, str):
+            fmt = fmt.encode()
+
         data = fd.read()
 
         # Choose constructor according to fmt argument
@@ -2000,10 +2029,16 @@ A wrapper function:
       tree_checkout(repo, obj, os.path.realpath(args.path))
 #+END_SRC
 
-And a function to do the actual work:
+And a function to do the actual work.  The destination path must be an
+existing directory.  If given a non-existent or non-directory path, it fails
+with a diagnostic error indicating the target is not a directory, which is
+resolved by creating the directory before checking out:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def tree_checkout(repo, tree, path):
+      if not os.path.isdir(path):
+          raise Exception(f"Checkout destination '{path}' is not a directory.")
+
       for item in tree.items:
           obj = object_read(repo, item.sha)
           dest = os.path.join(path, item.path)
@@ -2012,9 +2047,10 @@ And a function to do the actual work:
               os.mkdir(dest)
               tree_checkout(repo, obj, dest)
           elif obj.fmt == b'blob':
-              # @TODO Support symlinks (identified by mode 12****)
               with open(dest, 'wb') as f:
                   f.write(obj.blobdata)
+          else:
+              raise Exception(f"Cannot checkout object format {obj.fmt} at '{dest}'.")
 #+END_SRC
 
 * Refs, tags and branches
@@ -2249,10 +2285,28 @@ on whether or not =name= is provided.
             show_ref(repo, refs["tags"], with_hash=False)
 #+END_SRC
 
-And we just need one more function to actually create the tag:
+And we just need one more function to actually create the tag.
+Its contract specifies that the tag name and target reference must be
+non-empty strings, with =ref= defaulting to ="HEAD"=.  The
+=create_tag_object= flag controls whether to produce an annotated tag
+object or a lightweight reference:
 
 #+begin_src python :tangle libwyag.py
-  def tag_create(repo, name, ref, create_tag_object=False):
+  def tag_create(repo, name, ref="HEAD", create_tag_object=False):
+      """Create a new tag reference in the repository.
+
+      Contract:
+      - repo: GitRepository object where the tag will be created.
+      - name: Non-empty string tag name. Raises ValueError if empty or whitespace.
+      - ref: String reference or object identifier (defaults to "HEAD"). Raises ValueError if empty or whitespace.
+      - create_tag_object: Boolean flag. If True, creates an annotated tag object (GitTag)
+        and references it; if False, creates a lightweight tag directly referencing the target object.
+      """
+      if not name or not str(name).strip():
+          raise ValueError("Tag name cannot be empty.")
+      if not ref or not str(ref).strip():
+          raise ValueError("Reference cannot be empty.")
+
       # get the GitObject from the object reference
       sha = object_find(repo, ref)
 
@@ -2821,12 +2875,14 @@ produce more elegant code in C than in Python…)
 
 =git ls-files= displays the names of files in the staging area, with,
 as usual, a ton of options.  Our =ls-files= will be much simpler,
-/but/ we'll add a =--verbose= option that doesn't exist in git, just
-so we can display every single bit of info in the index file.
+supporting optional path and wildcard pattern filtering that preserves
+quoted argument boundaries, /plus/ a =--verbose= option that displays
+every single bit of info in the index file.
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("ls-files", help = "List all the stage files")
   argsp.add_argument("--verbose", action="store_true", help="Show everything.")
+  argsp.add_argument("path", nargs="*", default=[], help="Files or patterns to show (optional).")
 
   def cmd_ls_files(args):
       repo = repo_find()
@@ -2835,6 +2891,11 @@ so we can display every single bit of info in the index file.
           print(f"Index file format v{index.version}, containing {len(index.entries)} entries.")
 
       for e in index.entries:
+          if args.path:
+              # Filter by path or pattern, preserving exact argument boundaries
+              if not any(e.name == p or fnmatch(e.name, p) for p in args.path):
+                  continue
+
           print(e.name)
           if args.verbose:
               entry_type = { 0b1000: "regular file",
@@ -3207,8 +3268,8 @@ single dict (hashmap) with full paths as keys, so it's closer to the
 them and output their differences.
 
 First, a function to convert a tree (recursive, remember) to a (flat)
-dict.  And since trees are recursive, so the function itself is, again ---
-sorry about that :)
+dict.  The subtree check identifies directory tree entries (matching octal
+mode 040000 or 40000), recursing into subdirectories while mapping file paths:
 
 #+begin_src python :tangle libwyag.py
   def tree_to_dict(repo, ref, prefix=""):
@@ -3218,16 +3279,7 @@ sorry about that :)
 
       for leaf in tree.items:
           full_path = os.path.join(prefix, leaf.path)
-
-          # We read the object to extract its type (this is uselessly
-          # expensive: we could just open it as a file and read the
-          # first few bytes)
-          is_subtree = leaf.mode.startswith(b'04')
-
-          # Depending on the type, we either store the path (if it's a
-          # blob, so a regular file), or recurse (if it's another tree,
-          # so a subdir)
-          if is_subtree:
+          if leaf.mode.startswith(b'04') or leaf.mode.startswith(b'4'):
               ret.update(tree_to_dict(repo, leaf.sha, full_path))
           else:
               ret[full_path] = leaf.sha
@@ -3652,13 +3704,30 @@ read repo's config.
       return config
 #+end_src
 
-And just a simple function to grab, and format, the user identity:
+And just a simple function to grab, and format, the user identity.
+It returns a formatted string when user name and email are configured,
+or =None= on the missing-dependency branch when configuration is absent:
 
 #+begin_src python :tangle libwyag.py
-  def gitconfig_user_get(config):
-      if "user" in config:
-          if "name" in config["user"] and "email" in config["user"]:
-              return f"{config['user']['name']} <{config['user']['email']}>"
+  def gitconfig_user_get(config=None):
+      """Extract and format the user identity from git configuration.
+
+      Returns:
+      - 'Name <email>' if both 'name' and 'email' exist under the 'user' section.
+      - None on the missing-dependency branch if the user section or required keys are absent.
+      """
+      if config is None:
+          config = gitconfig_read()
+
+      if not config or "user" not in config:
+          return None
+
+      if "name" in config["user"] and "email" in config["user"]:
+          name = config["user"]["name"]
+          email = config["user"]["email"]
+          if name and email:
+              return f"{name} <{email}>"
+
       return None
 #+end_src
 
@@ -3854,24 +3923,24 @@ the commit object and updating HEAD will be way easier.  Just remember
 that what this function /does/ is built and store as many tree objects
 as needed to represent the index, and return the root tree's SHA-1.
 
-The function to create a commit object is simple enough, it just takes
-some arguments: the hash of the tree, the hash of the parent commit,
-the author's identity (a string), the timestamp and timezone delta,
-and the message:
+The function to create a commit object takes the root tree hash, parent
+commit hash (or None for a root commit), author identity string, a datetime
+timestamp, and the commit message.
 
-# @TODO Explain them!
+Example usage:
+- Setup: A repository instance, root tree SHA, author string, datetime timestamp, and message string.
+- Command: =commit_sha = commit_create(repo, tree, parent, author, timestamp, message)=
+- Output: The 40-character hex SHA-1 of the written commit object.
+- State verification: The commit object is stored under =.git/objects=, and reading it back yields matching tree, author, committer, and message fields.
 
 #+begin_src python :tangle libwyag.py
   def commit_create(repo, tree, parent, author, timestamp, message):
-  # Note: for the timestamp argument, you must provide a datetime object.
-      commit = GitCommit() # Create the new commit object.
+      commit = GitCommit()
       commit.kvlm[b"tree"] = tree.encode("ascii")
       if parent:
           commit.kvlm[b"parent"] = parent.encode("ascii")
 
-      # Trim message and add a trailing \n
       message = message.strip() + "\n"
-      # Format timezone
       offset = int(timestamp.astimezone().utcoffset().total_seconds())
       hours = offset // 3600
       minutes = (offset % 3600) // 60
