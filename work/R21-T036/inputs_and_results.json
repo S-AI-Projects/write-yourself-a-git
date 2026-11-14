@@ -1,0 +1,80 @@
+{
+  "cases_executed": 5,
+  "tool_versions": {
+    "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+    "git": "git version 2.55.0",
+    "wyag_path": "/Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag"
+  },
+  "native_test_names": [
+    "Create repos",
+    "status",
+    "hash-object",
+    "hash-object -w",
+    "cat-file",
+    "cat-file with long hash",
+    "Create commit",
+    "cat-file on commit object without indirection",
+    "cat-file on tree object redirected from commit",
+    "Add some directories and commits",
+    "ls-tree",
+    "checkout",
+    "rev-parse",
+    "ls-files",
+    "gitignore"
+  ],
+  "results": [
+    {
+      "case": "1: tree_to_dict_recursive_characterization",
+      "arguments": {
+        "ref": "HEAD",
+        "prefix": ""
+      },
+      "exit_status": 0,
+      "paths_matched": [
+        "notes.txt",
+        "second file with space.txt",
+        "subdir/nested.txt"
+      ],
+      "passed": true
+    },
+    {
+      "case": "2: tree_to_dict_prefix_and_subtree",
+      "arguments": {
+        "ref": "765b5b497b4554beda728601b66f80d82404727a",
+        "prefix": "custom_prefix"
+      },
+      "exit_status": 0,
+      "paths_matched": [
+        "custom_prefix/nested.txt"
+      ],
+      "passed": true
+    },
+    {
+      "case": "3: tree_to_dict_status_integration",
+      "arguments": {
+        "command": "cmd_status_head_index"
+      },
+      "exit_status": 0,
+      "passed": true
+    },
+    {
+      "case": "4: tree_to_dict_nonexistent_ref_failure",
+      "arguments": {
+        "ref": "missing_ref_abc123"
+      },
+      "exit_status": 1,
+      "expected_error": "No such reference missing_ref_abc123.",
+      "actual_error": "No such reference missing_ref_abc123.",
+      "passed": true
+    },
+    {
+      "case": "5: tree_to_dict_non_tree_object_failure",
+      "arguments": {
+        "ref": "4a58007052a65fbc2fc3f910f2855f45a4058e74"
+      },
+      "exit_status": 1,
+      "actual_error": "'NoneType' object is not subscriptable",
+      "passed": true
+    }
+  ]
+}

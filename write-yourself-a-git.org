@@ -3261,8 +3261,8 @@ single dict (hashmap) with full paths as keys, so it's closer to the
 them and output their differences.
 
 First, a function to convert a tree (recursive, remember) to a (flat)
-dict.  And since trees are recursive, so the function itself is, again ---
-sorry about that :)
+dict.  The subtree check identifies directory tree entries (matching octal
+mode 040000 or 40000), recursing into subdirectories while mapping file paths:
 
 #+begin_src python :tangle libwyag.py
   def tree_to_dict(repo, ref, prefix=""):
@@ -3272,16 +3272,7 @@ sorry about that :)
 
       for leaf in tree.items:
           full_path = os.path.join(prefix, leaf.path)
-
-          # We read the object to extract its type (this is uselessly
-          # expensive: we could just open it as a file and read the
-          # first few bytes)
-          is_subtree = leaf.mode.startswith(b'04')
-
-          # Depending on the type, we either store the path (if it's a
-          # blob, so a regular file), or recurse (if it's another tree,
-          # so a subdir)
-          if is_subtree:
+          if leaf.mode.startswith(b'04') or leaf.mode.startswith(b'4'):
               ret.update(tree_to_dict(repo, leaf.sha, full_path))
           else:
               ret[full_path] = leaf.sha
