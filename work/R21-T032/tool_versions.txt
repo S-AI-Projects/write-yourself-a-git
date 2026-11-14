@@ -1,0 +1,3 @@
+python: 3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]
+git: git version 2.55.0
+wyag_path: /Users/pritpal/Documents/Writing a Git/write-yourself-a-git/wyag
