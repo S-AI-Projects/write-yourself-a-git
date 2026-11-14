@@ -3604,12 +3604,10 @@ exposed in the =wyag rm= command).
 
 #+BEGIN_SRC python :tangle libwyag.py
   def rm(repo, paths, delete=True, skip_missing=False):
-      # Find and read the index
       index = index_read(repo)
 
       worktree = repo.worktree + os.sep
 
-      # Make paths absolute
       abspaths = set()
       for path in paths:
           abspath = os.path.abspath(path)
