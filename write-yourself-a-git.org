@@ -2868,12 +2868,14 @@ produce more elegant code in C than in Python…)
 
 =git ls-files= displays the names of files in the staging area, with,
 as usual, a ton of options.  Our =ls-files= will be much simpler,
-/but/ we'll add a =--verbose= option that doesn't exist in git, just
-so we can display every single bit of info in the index file.
+supporting optional path and wildcard pattern filtering that preserves
+quoted argument boundaries, /plus/ a =--verbose= option that displays
+every single bit of info in the index file.
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("ls-files", help = "List all the stage files")
   argsp.add_argument("--verbose", action="store_true", help="Show everything.")
+  argsp.add_argument("path", nargs="*", default=[], help="Files or patterns to show (optional).")
 
   def cmd_ls_files(args):
       repo = repo_find()
@@ -2882,6 +2884,11 @@ so we can display every single bit of info in the index file.
           print(f"Index file format v{index.version}, containing {len(index.entries)} entries.")
 
       for e in index.entries:
+          if args.path:
+              # Filter by path or pattern, preserving exact argument boundaries
+              if not any(e.name == p or fnmatch(e.name, p) for p in args.path):
+                  continue
+
           print(e.name)
           if args.verbose:
               entry_type = { 0b1000: "regular file",
