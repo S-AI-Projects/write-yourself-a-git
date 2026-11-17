@@ -1,0 +1,22 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "before\n",
+      "updated": "alpha\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space before\n",
+      "updated": "space changed\n",
+      "expected": "unstaged"
+    }
+  },
+  "edge_cases": {
+    "empty arguments": "exit 2, required-path diagnostic, no repository state change",
+    "missing file": "non-zero exit, missing-file diagnostic, no index creation"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Index metadata timestamps are excluded by comparing git ls-files --stage."
+  ]
+}

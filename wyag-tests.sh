@@ -8,12 +8,8 @@ function step() {
 
 wyag=$(realpath ./wyag)
 
-testdir=/tmp/wyag-tests
-if [[ -e $testdir ]]; then
-    rm -rf $testdir/*
-else
-    mkdir $testdir
-fi
+testdir=$(mktemp -d "${TMPDIR:-/tmp}/wyag-tests.XXXXXX")
+trap 'rm -rf "$testdir"' EXIT
 cd $testdir
 step "working on $(pwd)"
 
@@ -193,6 +189,45 @@ git check-ignore hello.org >> ../file2
 set -e
 cd ..
 cmp file1 file2
+
+step "add stages files and rejects empty and missing paths"
+"$wyag" init add
+printf 'alpha\n' > add/notes.txt
+printf 'spaced\n' > "add/file with space.txt"
+set +e
+(cd add && "$wyag" add notes.txt "file with space.txt") > add-stdout 2> add-stderr
+add_status=$?
+set -e
+test "$add_status" -eq 0
+test ! -s add-stdout
+test ! -s add-stderr
+git -C add ls-files --stage > add-wyag-index
+git init -q -b master add-reference
+cp add/notes.txt add-reference/notes.txt
+cp "add/file with space.txt" "add-reference/file with space.txt"
+git -C add-reference add -- notes.txt "file with space.txt"
+git -C add-reference ls-files --stage > add-git-index
+diff -u add-git-index add-wyag-index
+git -C add cat-file -e "$(git -C add ls-files --format='%(objectname)' -- notes.txt)"
+
+"$wyag" init add-empty
+set +e
+(cd add-empty && "$wyag" add) > add-empty-stdout 2> add-empty-stderr
+empty_add_status=$?
+set -e
+test "$empty_add_status" -eq 2
+test ! -s add-empty-stdout
+grep -q "required: path" add-empty-stderr
+test ! -e add-empty/.git/index
+
+set +e
+(cd add-empty && "$wyag" add missing.txt) > add-missing-stdout 2> add-missing-stderr
+missing_add_status=$?
+set -e
+test "$missing_add_status" -ne 0
+test ! -s add-missing-stdout
+grep -q "Not a file, or outside the worktree" add-missing-stderr
+test ! -e add-empty/.git/index
 
 
 
