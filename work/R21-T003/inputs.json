@@ -1,0 +1,24 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "state_transitions": {
+    "initial_state": "Initial commit created on master with tag v1.0",
+    "intended_transition": "New commit on feature branch advances refs/heads/feature",
+    "unrelated_state": "refs/heads/master and refs/tags/v1.0 remain strictly unchanged",
+    "command_idempotence": "Running show-ref itself causes zero mutations to refs or index"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

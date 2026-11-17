@@ -2108,7 +2108,12 @@ stupid recursive function to collect refs and return them as a dict:
       return ret
 #+END_SRC
 
-And, as usual, a subparser, a bridge, and a (recursive) worker function:
+And, as usual, a subparser, a bridge, and a (recursive) worker function.
+Listing references via =wyag show-ref= displays the SHA-1 and name of
+all references under =.git/refs=.  The command is strictly read-only:
+it inspects reference state without altering any refs, index entries,
+or worktree files.  When branch references transition after commits,
+=show-ref= reflects the new target while unrelated references stay untouched:
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("show-ref", help="List references.")

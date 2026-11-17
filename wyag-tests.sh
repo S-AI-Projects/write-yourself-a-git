@@ -194,6 +194,52 @@ set -e
 cd ..
 cmp file1 file2
 
+step "show-ref verifies state transitions"
+"$wyag" init showref-transition-repo
+cd showref-transition-repo
+echo "alpha" > notes.txt
+git add notes.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "first commit" > /dev/null
+git tag v1.0
+
+# Record refs before state transition
+"$wyag" show-ref > ../showref-before.out
+test -s ../showref-before.out
+grep -q "refs/heads/master" ../showref-before.out
+grep -q "refs/tags/v1.0" ../showref-before.out
+master_before=$(git rev-parse refs/heads/master)
+tag_before=$(git rev-parse refs/tags/v1.0)
+
+# Advance master with second commit (state transition)
+echo "beta" >> notes.txt
+git add notes.txt
+GIT_AUTHOR_DATE="2010-01-01 02:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 02:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "second commit" > /dev/null
+
+# Record refs after state transition
+"$wyag" show-ref > ../showref-after.out
+test -s ../showref-after.out
+master_after=$(git rev-parse refs/heads/master)
+
+# Master branch transitioned to new commit
+test "$master_before" != "$master_after"
+grep -q "$master_after refs/heads/master" ../showref-after.out
+
+# Unrelated state (tag v1.0) remains unchanged
+grep -q "$tag_before refs/tags/v1.0" ../showref-after.out
+cd ..
+
 
 
 

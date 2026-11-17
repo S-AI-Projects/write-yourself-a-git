@@ -1,0 +1,415 @@
+{
+  "commands": [
+    {
+      "label": "version: python",
+      "args": [
+        "python3",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "Python 3.15.2\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: git",
+      "args": [
+        "git",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "git version 2.55.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: make",
+      "args": [
+        "make",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: emacs",
+      "args": [
+        "emacs",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Emacs 31.1\nCopyright (C) 2026 Free Software Foundation, Inc.\nGNU Emacs comes with ABSOLUTELY NO WARRANTY.\nYou may redistribute copies of GNU Emacs\nunder the terms of the GNU General Public License.\nFor more information about these matters, see the file named COPYING.\n",
+      "stderr": ""
+    },
+    {
+      "label": "native shell test suite",
+      "args": [
+        "bash",
+        "wyag-tests.sh"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "18 wyag-tests.sh working on /tmp/wyag-tests\n20 wyag-tests.sh Create repos\n24 wyag-tests.sh status\n31 wyag-tests.sh hash-object\n37 wyag-tests.sh hash-object -w\n46 wyag-tests.sh cat-file\n54 wyag-tests.sh cat-file with long hash\n62 wyag-tests.sh Create commit (git only, nothing is tested)\n86 wyag-tests.sh cat-file on commit object without indirection\n94 wyag-tests.sh cat-file on tree object redirected from commit\n102 wyag-tests.sh Add some directories and commits (git only, nothing is tested)\n131 wyag-tests.sh ls-tree\n139 wyag-tests.sh checkout\n150 wyag-tests.sh rev-parse\n163 wyag-tests.sh ls-files\n179 wyag-tests.sh gitignore\n197 wyag-tests.sh show-ref verifies state transitions\n246 wyag-tests.sh THIS WAS A TRIUMPH\n247 wyag-tests.sh I'M MAKING A NOTE HERE\n248 wyag-tests.sh HUGE SUCCESS\n",
+      "stderr": "Updated 3 paths from the index\n"
+    },
+    {
+      "label": "initialize wyag repository",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "initialize reference Git repository",
+      "args": [
+        "git",
+        "-c",
+        "init.defaultBranch=master",
+        "init",
+        "--quiet",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/git"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "commit",
+        "-m",
+        "first commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 185f762] first commit\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "create tag v1.0",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "tag",
+        "v1.0"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/git",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/git",
+        "commit",
+        "-m",
+        "first commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 185f762] first commit\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "create tag v1.0",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/git",
+        "tag",
+        "v1.0"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/git",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "wyag show-ref initial",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "show-ref"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+      "exit_status": 0,
+      "stdout": "185f762f4ffae228bc323c5e1f4e02d21f2b501e refs/heads/master\n185f762f4ffae228bc323c5e1f4e02d21f2b501e refs/tags/v1.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "checkout feature branch",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "checkout",
+        "-b",
+        "feature"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": "Switched to a new branch 'feature'\n"
+    },
+    {
+      "label": "add feature file",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "add",
+        "feature.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit on feature",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "commit",
+        "-m",
+        "feature commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[feature f2ff5a9] feature commit\n 2 files changed, 2 insertions(+), 1 deletion(-)\n create mode 100644 feature.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "wyag show-ref after transition",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "show-ref"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+      "exit_status": 0,
+      "stdout": "f2ff5a9528daec97864d3d0c7cd2b0acaa9ac093 refs/heads/feature\n185f762f4ffae228bc323c5e1f4e02d21f2b501e refs/heads/master\n185f762f4ffae228bc323c5e1f4e02d21f2b501e refs/tags/v1.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "get feature head",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-showref-trans-j_la7xsn/wyag",
+        "rev-parse",
+        "refs/heads/feature"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "f2ff5a9528daec97864d3d0c7cd2b0acaa9ac093\n",
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "python version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "make version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "emacs version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "native wyag-tests.sh suite passes",
+      "passed": true
+    },
+    {
+      "assertion": "native suite executes the focused show-ref test",
+      "passed": true
+    },
+    {
+      "assertion": "wyag repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "reference Git repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "create tag v1.0 exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "create tag v1.0 exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "wyag show-ref exits 0 on initial state",
+      "passed": true
+    },
+    {
+      "assertion": "initial show-ref contains refs/heads/master",
+      "passed": true
+    },
+    {
+      "assertion": "initial show-ref contains refs/tags/v1.0",
+      "passed": true
+    },
+    {
+      "assertion": "show-ref output matches master ref on disk",
+      "passed": true
+    },
+    {
+      "assertion": "show-ref output matches tag ref on disk",
+      "passed": true
+    },
+    {
+      "assertion": "show-ref causes zero filesystem mutations to refs",
+      "passed": true
+    },
+    {
+      "assertion": "checkout feature branch exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "add feature file exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit on feature exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "wyag show-ref exits 0 after transition",
+      "passed": true
+    },
+    {
+      "assertion": "get feature head exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "show-ref contains new feature ref",
+      "passed": true
+    },
+    {
+      "assertion": "feature ref points to new feature commit",
+      "passed": true
+    },
+    {
+      "assertion": "unrelated refs/heads/master remains strictly unchanged",
+      "passed": true
+    },
+    {
+      "assertion": "unrelated refs/tags/v1.0 remains strictly unchanged",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "tool_versions": {
+    "python": "Python 3.15.2",
+    "git": "git version 2.55.0",
+    "make": "GNU Make 3.81",
+    "emacs": "GNU Emacs 31.1"
+  }
+}
