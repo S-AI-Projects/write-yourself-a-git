@@ -620,11 +620,14 @@ command, we're only going to need two more things:
 
 2. We also need a "bridge" function that will read argument values
    from the object returned by argparse and call the actual
-   function with correct values.
+   function with correct values.  Normalizing the target path to
+   default to =.= when empty makes the directory dispatch condition
+   explicit and unambiguous, while preserving observable behavior:
 
    #+BEGIN_SRC python :tangle libwyag.py
    def cmd_init(args):
-       repo_create(args.path)
+       target_path = args.path if args.path else "."
+       repo_create(target_path)
    #+END_SRC
 
 And we're done!  If you've followed these steps, you should now be

@@ -1,0 +1,24 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "implementation_readability": {
+    "default_path_contract": "wyag init without path argument defaults explicitly to '.'",
+    "explicit_path_contract": "wyag init <path> creates new git repository at target path",
+    "structural_invariants": ".git containing HEAD, config, description, objects, refs/heads, refs/tags",
+    "error_handling": "wyag init on an existing non-directory file raises clear exception"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

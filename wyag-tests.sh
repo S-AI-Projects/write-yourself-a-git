@@ -194,6 +194,35 @@ set -e
 cd ..
 cmp file1 file2
 
+step "init clarifies one source responsibility"
+# Test default path dispatch (.)
+mkdir init-default-repo
+cd init-default-repo
+"$wyag" init > /dev/null
+test -d .git
+test -f .git/HEAD
+test -f .git/config
+test -d .git/objects
+test -d .git/refs/heads
+test -d .git/refs/tags
+grep -q "ref: refs/heads/master" .git/HEAD
+grep -q "repositoryformatversion = 0" .git/config
+cd ..
+
+# Test explicit path dispatch
+"$wyag" init init-explicit-repo > /dev/null
+test -d init-explicit-repo/.git
+test -f init-explicit-repo/.git/HEAD
+test -d init-explicit-repo/.git/objects
+
+# Characterization test: re-init non-empty directory or file fails
+touch not-a-dir
+set +e
+"$wyag" init not-a-dir > ../init-fail.out 2>&1
+init_fail_status=$?
+set -e
+test "$init_fail_status" -ne 0
+
 
 
 

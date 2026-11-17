@@ -1,0 +1,318 @@
+{
+  "commands": [
+    {
+      "label": "version: python",
+      "args": [
+        "python3",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "Python 3.15.2\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: git",
+      "args": [
+        "git",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "git version 2.55.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: make",
+      "args": [
+        "make",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: emacs",
+      "args": [
+        "emacs",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Emacs 31.1\nCopyright (C) 2026 Free Software Foundation, Inc.\nGNU Emacs comes with ABSOLUTELY NO WARRANTY.\nYou may redistribute copies of GNU Emacs\nunder the terms of the GNU General Public License.\nFor more information about these matters, see the file named COPYING.\n",
+      "stderr": ""
+    },
+    {
+      "label": "native shell test suite",
+      "args": [
+        "bash",
+        "wyag-tests.sh"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "18 wyag-tests.sh working on /tmp/wyag-tests\n20 wyag-tests.sh Create repos\n24 wyag-tests.sh status\n31 wyag-tests.sh hash-object\n37 wyag-tests.sh hash-object -w\n46 wyag-tests.sh cat-file\n54 wyag-tests.sh cat-file with long hash\n62 wyag-tests.sh Create commit (git only, nothing is tested)\n86 wyag-tests.sh cat-file on commit object without indirection\n94 wyag-tests.sh cat-file on tree object redirected from commit\n102 wyag-tests.sh Add some directories and commits (git only, nothing is tested)\n131 wyag-tests.sh ls-tree\n139 wyag-tests.sh checkout\n150 wyag-tests.sh rev-parse\n163 wyag-tests.sh ls-files\n179 wyag-tests.sh gitignore\n197 wyag-tests.sh init clarifies one source responsibility\n229 wyag-tests.sh THIS WAS A TRIUMPH\n230 wyag-tests.sh I'M MAKING A NOTE HERE\n231 wyag-tests.sh HUGE SUCCESS\n",
+      "stderr": "Updated 3 paths from the index\n"
+    },
+    {
+      "label": "initialize wyag repository at explicit path",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/wyag"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "initialize reference Git repository",
+      "args": [
+        "git",
+        "-c",
+        "init.defaultBranch=master",
+        "init",
+        "--quiet",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/git"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/wyag",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/wyag",
+        "commit",
+        "-m",
+        "initial commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) c3218b3] initial commit\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/wyag",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/git",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/git",
+        "commit",
+        "-m",
+        "initial commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) c3218b3] initial commit\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/git",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "wyag init in default directory",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/default_dir",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "wyag init on regular file",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/dummy.file"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/rocky/snai-project/write-yourself-a-git/wyag\", line 4, in <module>\n    libwyag.main()\n    ~~~~~~~~~~~~^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 58, in main\n    case \"init\"         : cmd_init(args)\n                          ~~~~~~~~^^^^^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 181, in cmd_init\n    repo_create(target_path)\n    ~~~~~~~~~~~^^^^^^^^^^^^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 136, in repo_create\n    raise Exception (f\"{path} is not a directory!\")\nException: /var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-init-readability-emvshlpj/dummy.file is not a directory!\n"
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "python version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "make version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "emacs version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "native wyag-tests.sh suite passes",
+      "passed": true
+    },
+    {
+      "assertion": "native suite executes the focused init test",
+      "passed": true
+    },
+    {
+      "assertion": "wyag init with explicit path succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "reference Git repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": ".git is a directory",
+      "passed": true
+    },
+    {
+      "assertion": "HEAD is a file",
+      "passed": true
+    },
+    {
+      "assertion": "config is a file",
+      "passed": true
+    },
+    {
+      "assertion": "description is a file",
+      "passed": true
+    },
+    {
+      "assertion": "objects is a directory",
+      "passed": true
+    },
+    {
+      "assertion": "refs/heads is a directory",
+      "passed": true
+    },
+    {
+      "assertion": "refs/tags is a directory",
+      "passed": true
+    },
+    {
+      "assertion": "HEAD points to ref: refs/heads/master",
+      "passed": true
+    },
+    {
+      "assertion": "config specifies format version 0",
+      "passed": true
+    },
+    {
+      "assertion": "wyag init with no arguments defaults to current directory",
+      "passed": true
+    },
+    {
+      "assertion": "default init created .git in current directory",
+      "passed": true
+    },
+    {
+      "assertion": "default init created valid HEAD file",
+      "passed": true
+    },
+    {
+      "assertion": "wyag init on regular file fails non-zero",
+      "passed": true
+    },
+    {
+      "assertion": "error message indicates path is not a directory",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "tool_versions": {
+    "python": "Python 3.15.2",
+    "git": "git version 2.55.0",
+    "make": "GNU Make 3.81",
+    "emacs": "GNU Emacs 31.1"
+  }
+}
