@@ -1,0 +1,391 @@
+{
+  "commands": [
+    {
+      "label": "version: python",
+      "args": [
+        "python3",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "Python 3.15.2\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: git",
+      "args": [
+        "git",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "git version 2.55.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: make",
+      "args": [
+        "make",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: emacs",
+      "args": [
+        "emacs",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Emacs 31.1\nCopyright (C) 2026 Free Software Foundation, Inc.\nGNU Emacs comes with ABSOLUTELY NO WARRANTY.\nYou may redistribute copies of GNU Emacs\nunder the terms of the GNU General Public License.\nFor more information about these matters, see the file named COPYING.\n",
+      "stderr": ""
+    },
+    {
+      "label": "native shell test suite",
+      "args": [
+        "bash",
+        "wyag-tests.sh"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "18 wyag-tests.sh working on /tmp/wyag-tests\n20 wyag-tests.sh Create repos\n24 wyag-tests.sh status\n31 wyag-tests.sh hash-object\n37 wyag-tests.sh hash-object -w\n46 wyag-tests.sh cat-file\n54 wyag-tests.sh cat-file with long hash\n62 wyag-tests.sh Create commit (git only, nothing is tested)\n86 wyag-tests.sh cat-file on commit object without indirection\n94 wyag-tests.sh cat-file on tree object redirected from commit\n102 wyag-tests.sh Add some directories and commits (git only, nothing is tested)\n131 wyag-tests.sh ls-tree\n139 wyag-tests.sh checkout\n150 wyag-tests.sh rev-parse\n163 wyag-tests.sh ls-files\n179 wyag-tests.sh gitignore\n197 wyag-tests.sh log integrates a focused check\n243 wyag-tests.sh THIS WAS A TRIUMPH\n244 wyag-tests.sh I'M MAKING A NOTE HERE\n245 wyag-tests.sh HUGE SUCCESS\n",
+      "stderr": "Updated 3 paths from the index\n"
+    },
+    {
+      "label": "initialize wyag repository",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "initialize reference Git repository",
+      "args": [
+        "git",
+        "-c",
+        "init.defaultBranch=master",
+        "init",
+        "--quiet",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/git"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "commit",
+        "-m",
+        "first commit message"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 0ad410a] first commit message\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/git",
+        "add",
+        "notes.txt",
+        "file with space.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/git",
+        "commit",
+        "-m",
+        "first commit message"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 0ad410a] first commit message\n 2 files changed, 2 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/git",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "get c1 sha",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "0ad410aaa4beb0ddc20768df50e724a89d0fe66b\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage second file",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "add",
+        "second.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit second state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "commit",
+        "-m",
+        "second commit message"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master 527c3a5] second commit message\n 2 files changed, 2 insertions(+), 1 deletion(-)\n create mode 100644 second.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "get c2 sha",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "527c3a5569fdfd276a4494d922b26fc79dc84af2\n",
+      "stderr": ""
+    },
+    {
+      "label": "wyag log HEAD",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "log"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+      "exit_status": 0,
+      "stdout": "digraph wyaglog{\n  node[shape=rect]\n  c_527c3a5569fdfd276a4494d922b26fc79dc84af2 [label=\"527c3a5: second commit message\"]\n  c_527c3a5569fdfd276a4494d922b26fc79dc84af2 -> c_0ad410aaa4beb0ddc20768df50e724a89d0fe66b;\n  c_0ad410aaa4beb0ddc20768df50e724a89d0fe66b [label=\"0ad410a: first commit message\"]\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "wyag log explicit c1",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "log",
+        "0ad410aaa4beb0ddc20768df50e724a89d0fe66b"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+      "exit_status": 0,
+      "stdout": "digraph wyaglog{\n  node[shape=rect]\n  c_0ad410aaa4beb0ddc20768df50e724a89d0fe66b [label=\"0ad410a: first commit message\"]\n}\n",
+      "stderr": ""
+    },
+    {
+      "label": "wyag log nonexistent",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "log",
+        "0000000000000000000000000000000000000000"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-log-integ-3mzqxsz9/wyag",
+      "exit_status": 1,
+      "stdout": "digraph wyaglog{\n  node[shape=rect]\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/rocky/snai-project/write-yourself-a-git/wyag\", line 4, in <module>\n    libwyag.main()\n    ~~~~~~~~~~~~^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 59, in main\n    case \"log\"          : cmd_log(args)\n                          ~~~~~~~^^^^^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 449, in cmd_log\n    log_graphviz(repo, object_find(repo, args.commit), set())\n                       ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"/Users/rocky/snai-project/write-yourself-a-git/libwyag.py\", line 800, in object_find\n    raise Exception(f\"No such reference {name}.\")\nException: No such reference 0000000000000000000000000000000000000000.\n"
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "python version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "make version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "emacs version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "native wyag-tests.sh suite passes",
+      "passed": true
+    },
+    {
+      "assertion": "native suite executes the focused log check",
+      "passed": true
+    },
+    {
+      "assertion": "wyag repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "reference Git repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "get c1 sha exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage second file exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit second state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "get c2 sha exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "wyag log exits with code 0",
+      "passed": true
+    },
+    {
+      "assertion": "log stdout contains digraph wyaglog",
+      "passed": true
+    },
+    {
+      "assertion": "digraph includes c1 node",
+      "passed": true
+    },
+    {
+      "assertion": "digraph includes c2 node",
+      "passed": true
+    },
+    {
+      "assertion": "digraph includes first commit message",
+      "passed": true
+    },
+    {
+      "assertion": "digraph includes second commit message",
+      "passed": true
+    },
+    {
+      "assertion": "wyag log with explicit commit sha exits code 0",
+      "passed": true
+    },
+    {
+      "assertion": "explicit log includes c1 node",
+      "passed": true
+    },
+    {
+      "assertion": "log starting at c1 does not include c2",
+      "passed": true
+    },
+    {
+      "assertion": "wyag log with invalid commit exits non-zero",
+      "passed": true
+    },
+    {
+      "assertion": "error diagnostic explains missing reference",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "tool_versions": {
+    "python": "Python 3.15.2",
+    "git": "git version 2.55.0",
+    "make": "GNU Make 3.81",
+    "emacs": "GNU Emacs 31.1"
+  }
+}

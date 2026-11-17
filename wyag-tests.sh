@@ -194,6 +194,49 @@ set -e
 cd ..
 cmp file1 file2
 
+step "log integrates a focused check"
+"$wyag" init log-focused-repo
+cd log-focused-repo
+echo "first commit content" > first.txt
+git add first.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "first commit msg" > /dev/null
+c1_sha=$(git rev-parse HEAD)
+
+echo "second commit content" > second.txt
+git add second.txt
+GIT_AUTHOR_DATE="2010-01-01 02:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 02:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "second commit msg" > /dev/null
+c2_sha=$(git rev-parse HEAD)
+
+# Run wyag log and verify Graphviz output
+"$wyag" log > ../log-out.txt
+test -s ../log-out.txt
+grep -q "digraph wyaglog" ../log-out.txt
+grep -q "c_${c1_sha}" ../log-out.txt
+grep -q "c_${c2_sha}" ../log-out.txt
+grep -q "first commit msg" ../log-out.txt
+grep -q "second commit msg" ../log-out.txt
+
+# Failure propagation: invalid commit reference exits non-zero
+set +e
+"$wyag" log nonexistent-ref > ../log-err.out 2>&1
+log_err_status=$?
+set -e
+test "$log_err_status" -ne 0
+grep -q -i "No such reference\|Error\|Exception" ../log-err.out
+cd ..
+
 
 
 

@@ -1,0 +1,24 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "tooling_integration": {
+    "repeatable_entry_point": "wyag log traverses commit history and produces valid Graphviz digraph",
+    "failure_propagation": "Nonexistent commit references fail non-zero with error diagnostic",
+    "isolation": "Command executes independently without network or external services",
+    "temporary_state": "All fixtures and outputs are isolated in temporary directory structures"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

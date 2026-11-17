@@ -1317,6 +1317,11 @@ dead, lookup "graphviz online" in your favorite search engine)
                      help="Commit to start at.")
 #+END_SRC
 
+The =log= command generates a standalone Graphviz =digraph= representation of
+the commit history starting at the given commit (or =HEAD=).  It operates
+entirely on local repository objects without external service dependencies,
+propagating resolution errors cleanly when a commit reference cannot be found:
+
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_log(args):
       repo = repo_find()
