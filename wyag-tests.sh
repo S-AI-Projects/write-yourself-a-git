@@ -194,6 +194,35 @@ set -e
 cd ..
 cmp file1 file2
 
+step "status-index-worktree explains a failing invocation"
+# Failure branch: invoke status in non-repository directory
+non_repo_dir=$(mktemp -d "${TMPDIR:-/tmp}/wyag-nonrepo.XXXXXX")
+set +e
+(cd "$non_repo_dir" && "$wyag" status) > ../status-fail.out 2> ../status-fail.err
+fail_status=$?
+set -e
+rm -rf "$non_repo_dir"
+test "$fail_status" -ne 0
+test -s ../status-fail.err
+grep -q -i "No Git directory\|Exception\|Error" ../status-fail.err
+
+# Corrected invocation: execute within valid initialized repository
+"$wyag" init status-corr-repo
+cd status-corr-repo
+echo "alpha" > notes.txt
+git add notes.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "corr commit" > /dev/null
+"$wyag" status > ../status-corr.out
+test -s ../status-corr.out
+grep -q "On branch master" ../status-corr.out
+cd ..
+
 
 
 

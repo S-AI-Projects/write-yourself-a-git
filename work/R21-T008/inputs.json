@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "failure_diagnostics": {
+    "failure_branch": "Running wyag status outside a git repository fails non-zero with informative diagnostic",
+    "diagnostic_explanation": "Informs user that no git directory was found and repository context is required",
+    "corrected_invocation": "Running status in a valid initialized repository succeeds with exit code 0"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

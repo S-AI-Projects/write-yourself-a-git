@@ -3257,8 +3257,16 @@ And the command itself:
 
 *** Finding changes between index and worktree
 
+Comparing the index to the working tree requires an active worktree and a
+valid index.  If the repository has no worktree (bare repository) or the index
+is missing, the function provides a clear troubleshooting diagnostic explaining
+that status requires a non-bare repository with an accessible worktree.
+
 #+begin_src python :tangle libwyag.py
   def cmd_status_index_worktree(repo, index):
+      if not repo.worktree:
+          raise Exception("Cannot check status: repository has no worktree (bare repository).")
+
       print("Changes not staged for commit:")
 
       ignore = gitignore_read(repo)
