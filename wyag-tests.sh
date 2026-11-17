@@ -194,6 +194,48 @@ set -e
 cd ..
 cmp file1 file2
 
+step "ls-tree exercises argument boundaries"
+"$wyag" init lstree-boundary-repo
+cd lstree-boundary-repo
+echo "alpha" > notes.txt
+git add notes.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "base commit" > /dev/null
+mkdir sub
+echo "sub content" > sub/subfile.txt
+git add sub/subfile.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "sub commit" > /dev/null
+
+# Minimum accepted argument list (tree only)
+"$wyag" ls-tree HEAD > ../lstree-min.out
+test -s ../lstree-min.out
+grep -q "notes.txt" ../lstree-min.out
+
+# Optional argument (-r / recursive)
+"$wyag" ls-tree -r HEAD > ../lstree-opt.out
+test -s ../lstree-opt.out
+grep -q "sub/subfile.txt" ../lstree-opt.out
+
+# Invalid combination: missing required tree argument
+set +e
+"$wyag" ls-tree > ../lstree-err.out 2>&1
+lstree_err_status=$?
+set -e
+test "$lstree_err_status" -ne 0
+grep -q -i "error\|usage\|required" ../lstree-err.out
+cd ..
+
 
 
 

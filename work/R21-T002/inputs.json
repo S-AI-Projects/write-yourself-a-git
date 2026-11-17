@@ -1,0 +1,24 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "argument_boundaries": {
+    "minimum_args": "wyag ls-tree HEAD (succeeds with exit 0)",
+    "optional_argument": "wyag ls-tree -r HEAD (succeeds with recursive tree entries)",
+    "invalid_combination": "wyag ls-tree (fails with status 2, usage message, no state change)",
+    "nonexistent_tree": "wyag ls-tree nonexistent_sha (fails non-zero, diagnostic message)"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

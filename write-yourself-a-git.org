@@ -1888,8 +1888,9 @@ And now we just have to combine all that into a class:
 :END:
 
 While we're at it, let's add the =ls-tree= command to wyag.  It's so
-easy there's no reason not to.  =git ls-tree [-r] TREE= simply prints
-the contents of a tree, recursively with the =-r= flag.  In recursive
+easy there's no reason not to.  =wyag ls-tree [-r] TREE= simply prints
+the contents of a tree, recursively with the =-r= flag.  The =TREE=
+argument is required; omitting it produces a usage error.  In recursive
 mode, it doesn't show subtrees, just final objects with their full
 paths.
 
