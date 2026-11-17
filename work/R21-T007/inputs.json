@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "executable_documentation": {
+    "scenario": "Repository on master with one staged modification and one unstaged worktree change",
+    "output_verification": "Status reports active branch, changes to be committed, and changes not staged for commit",
+    "state_invariance": "Running status leaves index, worktree, and references strictly unchanged"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

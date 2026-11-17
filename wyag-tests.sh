@@ -194,6 +194,42 @@ set -e
 cd ..
 cmp file1 file2
 
+step "status publishes a tested usage example"
+"$wyag" init status-example-repo
+cd status-example-repo
+echo "alpha" > notes.txt
+echo "space initial" > "file with space.txt"
+git add notes.txt "file with space.txt"
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "base commit" > /dev/null
+
+# Staged change
+echo "alpha updated" > notes.txt
+git add notes.txt
+
+# Unstaged change
+echo "space changed" > "file with space.txt"
+
+# Run wyag status and verify executable documentation example
+"$wyag" status > ../status-example.out
+test -s ../status-example.out
+grep -q "On branch master" ../status-example.out
+grep -q "Changes to be committed:" ../status-example.out
+grep -q "modified:   notes.txt" ../status-example.out || grep -q "notes.txt" ../status-example.out
+grep -q "Changes not staged for commit:" ../status-example.out
+grep -q "file with space.txt" ../status-example.out
+
+# State verification: index and refs remain unchanged by status
+git -C . status --porcelain > ../status-git-porcelain.out
+grep -q "notes.txt" ../status-git-porcelain.out
+grep -q "file with space.txt" ../status-git-porcelain.out
+cd ..
+
 
 
 

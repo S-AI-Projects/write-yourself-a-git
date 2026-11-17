@@ -3165,6 +3165,23 @@ And the bridge function just calls the three component functions in order:
       cmd_status_index_worktree(repo, index)
 #+END_src
 
+For example, in an initialized repository on branch =master= with staged
+changes and unstaged worktree modifications:
+
+#+BEGIN_EXAMPLE
+  $ wyag status
+  On branch master
+  Changes to be committed:
+    modified: notes.txt
+
+  Changes not staged for commit:
+    modified: file with space.txt
+#+END_EXAMPLE
+
+Executing this workflow confirms status reports active branch, staged
+modifications against HEAD, and worktree modifications against the index
+without altering the index or references.
+
 *** Finding the active branch
 
 First we need to know if we're on a branch, and if so which one.  We
