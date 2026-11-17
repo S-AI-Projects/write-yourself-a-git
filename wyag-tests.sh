@@ -194,6 +194,35 @@ set -e
 cd ..
 cmp file1 file2
 
+step "object-read protects a condition with a regression"
+"$wyag" init objread-regression-repo
+cd objread-regression-repo
+echo "valid regression payload" > valid.txt
+"$wyag" hash-object -w valid.txt > ../valid-sha.txt
+valid_sha=$(cat ../valid-sha.txt)
+
+# Read valid object back
+"$wyag" cat-file blob "$valid_sha" > ../read-out.txt
+cmp valid.txt ../read-out.txt
+
+# Create a malformed object directly on disk: header says size 100, but payload is 5 bytes
+# Header: "blob 100\x00short"
+python3 -c "
+import zlib, os
+data = b'blob 100\x00short'
+compressed = zlib.compress(data)
+os.makedirs('.git/objects/11', exist_ok=True)
+with open('.git/objects/11/11111111111111111111111111111111111111', 'wb') as f:
+    f.write(compressed)
+"
+set +e
+"$wyag" cat-file blob 1111111111111111111111111111111111111111 > ../corrupt-out.txt 2> ../corrupt-err.txt
+corrupt_status=$?
+set -e
+test "$corrupt_status" -ne 0
+grep -q -i "bad length\|Malformed object" ../corrupt-err.txt
+cd ..
+
 
 
 

@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "regression_mutation": {
+    "valid_object_contract": "object_read correctly deserializes valid blob, tree, and commit objects",
+    "length_mutation_guard": "Objects with mismatching declared vs actual payload length raise bad length exception",
+    "type_mutation_guard": "Objects with unknown format headers raise unknown type exception"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

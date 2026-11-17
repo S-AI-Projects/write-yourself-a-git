@@ -841,6 +841,12 @@ object type and its size.   From the type, we determine the actual
 class to use.   We convert the size to a Python integer, and check if
 it matches.
 
+The header format validation strictly verifies both that the declared
+byte length matches the remaining uncompressed payload length, and that
+the object format is one of the four supported Git types (commit, tree,
+tag, blob).  Corrupted objects with mismatched lengths or unknown types
+are rejected with explicit exceptions.
+
 When all is done, we just call the correct constructor for that
 object's format.
 
