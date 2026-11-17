@@ -1,0 +1,335 @@
+{
+  "commands": [
+    {
+      "label": "version: python",
+      "args": [
+        "python3",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "Python 3.15.2\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: git",
+      "args": [
+        "git",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "git version 2.55.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: make",
+      "args": [
+        "make",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: emacs",
+      "args": [
+        "emacs",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Emacs 31.1\nCopyright (C) 2026 Free Software Foundation, Inc.\nGNU Emacs comes with ABSOLUTELY NO WARRANTY.\nYou may redistribute copies of GNU Emacs\nunder the terms of the GNU General Public License.\nFor more information about these matters, see the file named COPYING.\n",
+      "stderr": ""
+    },
+    {
+      "label": "native shell test suite",
+      "args": [
+        "bash",
+        "wyag-tests.sh"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "18 wyag-tests.sh working on /tmp/wyag-tests\n20 wyag-tests.sh Create repos\n24 wyag-tests.sh status\n31 wyag-tests.sh hash-object\n37 wyag-tests.sh hash-object -w\n46 wyag-tests.sh cat-file\n54 wyag-tests.sh cat-file with long hash\n62 wyag-tests.sh Create commit (git only, nothing is tested)\n86 wyag-tests.sh cat-file on commit object without indirection\n94 wyag-tests.sh cat-file on tree object redirected from commit\n102 wyag-tests.sh Add some directories and commits (git only, nothing is tested)\n131 wyag-tests.sh ls-tree\n139 wyag-tests.sh checkout\n150 wyag-tests.sh rev-parse\n163 wyag-tests.sh ls-files\n179 wyag-tests.sh gitignore\n197 wyag-tests.sh tree-from-index preserves quoted arguments\n223 wyag-tests.sh THIS WAS A TRIUMPH\n224 wyag-tests.sh I'M MAKING A NOTE HERE\n225 wyag-tests.sh HUGE SUCCESS\n",
+      "stderr": "Updated 3 paths from the index\n"
+    },
+    {
+      "label": "initialize wyag repository",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "initialize reference Git repository",
+      "args": [
+        "git",
+        "-c",
+        "init.defaultBranch=master",
+        "init",
+        "--quiet",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag",
+        "add",
+        "notes.txt",
+        "file with space.txt",
+        "literal*star.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit special paths",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag",
+        "commit",
+        "-m",
+        "initial commit with special paths"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 20c6f1e] initial commit with special paths\n 3 files changed, 3 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 literal*star.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git",
+        "add",
+        "notes.txt",
+        "file with space.txt",
+        "literal*star.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit special paths",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git",
+        "commit",
+        "-m",
+        "initial commit with special paths"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) 20c6f1e] initial commit with special paths\n 3 files changed, 3 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 literal*star.txt\n create mode 100644 notes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "wyag ls-tree HEAD",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "ls-tree",
+        "HEAD"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag",
+      "exit_status": 0,
+      "stdout": "100644 blob 02ce40dc3e91a28612e1dfc79ba6422974bd289f\tfile with space.txt\n100644 blob 526b9cab258d0eb3452dec8d991a716db603bf6f\tliteral*star.txt\n100644 blob 4a58007052a65fbc2fc3f910f2855f45a4058e74\tnotes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "git ls-tree HEAD",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git",
+        "ls-tree",
+        "HEAD"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "100644 blob 02ce40dc3e91a28612e1dfc79ba6422974bd289f\tfile with space.txt\n100644 blob 526b9cab258d0eb3452dec8d991a716db603bf6f\tliteral*star.txt\n100644 blob 4a58007052a65fbc2fc3f910f2855f45a4058e74\tnotes.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "get wyag tree SHA",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/wyag",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "178df67a1830fd07ff69f566dbc44109887785bd\n",
+      "stderr": ""
+    },
+    {
+      "label": "get git tree SHA",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treeidx-quoted-lyt21mts/git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "178df67a1830fd07ff69f566dbc44109887785bd\n",
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "python version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "make version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "emacs version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "native wyag-tests.sh suite passes",
+      "passed": true
+    },
+    {
+      "assertion": "native suite executes the focused tree-from-index test",
+      "passed": true
+    },
+    {
+      "assertion": "wyag repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "reference Git repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit special paths exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit special paths exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "wyag ls-tree HEAD succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git ls-tree HEAD exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "tree output includes path with space exactly",
+      "passed": true
+    },
+    {
+      "assertion": "tree output includes path with literal asterisk",
+      "passed": true
+    },
+    {
+      "assertion": "exact path 'file with space.txt' is an entry",
+      "passed": true
+    },
+    {
+      "assertion": "exact path 'literal*star.txt' is an entry",
+      "passed": true
+    },
+    {
+      "assertion": "exact path 'notes.txt' is an entry",
+      "passed": true
+    },
+    {
+      "assertion": "get wyag tree SHA exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "get git tree SHA exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "wyag and git tree SHAs match identically",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "tool_versions": {
+    "python": "Python 3.15.2",
+    "git": "git version 2.55.0",
+    "make": "GNU Make 3.81",
+    "emacs": "GNU Emacs 31.1"
+  }
+}

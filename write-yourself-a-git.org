@@ -3782,6 +3782,12 @@ We make a tree from that last key (with the =README= blob and the
 =9352e52ff58fa9bf5a750f090af64c09fa6a3d93=.  That's our return value:
 the tree whose contents are the same as the index's.
 
+Index entries preserve exact path boundaries as recorded, including paths
+with spaces or literal special characters (such as wildcards).  The
+=tree_from_index= function converts index entries directly into nested tree
+objects without undergoing shell expansion or glob interpretation, ensuring
+filenames with whitespace or glob characters remain intact and isolated.
+
 Here's the actual function:
 
 #+begin_src python :tangle libwyag.py

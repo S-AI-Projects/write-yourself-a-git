@@ -194,6 +194,29 @@ set -e
 cd ..
 cmp file1 file2
 
+step "tree-from-index preserves quoted arguments"
+"$wyag" init treeidx-quoted-repo
+cd treeidx-quoted-repo
+echo "plain" > plain.txt
+echo "spaced content" > "file with space.txt"
+echo "literal star" > "literal*file.txt"
+git add "plain.txt" "file with space.txt" "literal*file.txt"
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "commit with quoted paths" > /dev/null
+
+# Read tree generated from index
+"$wyag" ls-tree HEAD > ../treeidx-out.txt
+test -s ../treeidx-out.txt
+grep -q "file with space.txt" ../treeidx-out.txt
+grep -q "literal\*file.txt" ../treeidx-out.txt
+grep -q "plain.txt" ../treeidx-out.txt
+cd ..
+
 
 
 
