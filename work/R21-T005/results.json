@@ -1,0 +1,321 @@
+{
+  "commands": [
+    {
+      "label": "version: python",
+      "args": [
+        "python3",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "Python 3.15.2\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: git",
+      "args": [
+        "git",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "git version 2.55.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: make",
+      "args": [
+        "make",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Make 3.81\nCopyright (C) 2006  Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A\nPARTICULAR PURPOSE.\n\nThis program built for i386-apple-darwin11.3.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "version: emacs",
+      "args": [
+        "emacs",
+        "--version"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "GNU Emacs 31.1\nCopyright (C) 2026 Free Software Foundation, Inc.\nGNU Emacs comes with ABSOLUTELY NO WARRANTY.\nYou may redistribute copies of GNU Emacs\nunder the terms of the GNU General Public License.\nFor more information about these matters, see the file named COPYING.\n",
+      "stderr": ""
+    },
+    {
+      "label": "native shell test suite",
+      "args": [
+        "bash",
+        "wyag-tests.sh"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "18 wyag-tests.sh working on /tmp/wyag-tests\n20 wyag-tests.sh Create repos\n24 wyag-tests.sh status\n31 wyag-tests.sh hash-object\n37 wyag-tests.sh hash-object -w\n46 wyag-tests.sh cat-file\n54 wyag-tests.sh cat-file with long hash\n62 wyag-tests.sh Create commit (git only, nothing is tested)\n86 wyag-tests.sh cat-file on commit object without indirection\n94 wyag-tests.sh cat-file on tree object redirected from commit\n102 wyag-tests.sh Add some directories and commits (git only, nothing is tested)\n131 wyag-tests.sh ls-tree\n139 wyag-tests.sh checkout\n150 wyag-tests.sh rev-parse\n163 wyag-tests.sh ls-files\n179 wyag-tests.sh gitignore\n197 wyag-tests.sh tree-to-dict isolates environment dependencies\n226 wyag-tests.sh THIS WAS A TRIUMPH\n227 wyag-tests.sh I'M MAKING A NOTE HERE\n228 wyag-tests.sh HUGE SUCCESS\n",
+      "stderr": "Updated 3 paths from the index\n"
+    },
+    {
+      "label": "initialize wyag repository",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "init",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "initialize reference Git repository",
+      "args": [
+        "git",
+        "-c",
+        "init.defaultBranch=master",
+        "init",
+        "--quiet",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/git"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+        "add",
+        "notes.txt",
+        "file with space.txt",
+        "sub/nested.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+        "commit",
+        "-m",
+        "initial commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) c02b846] initial commit\n 3 files changed, 3 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n create mode 100644 sub/nested.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage initial files",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/git",
+        "add",
+        "notes.txt",
+        "file with space.txt",
+        "sub/nested.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit initial state",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/git",
+        "commit",
+        "-m",
+        "initial commit"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "[master (root-commit) c02b846] initial commit\n 3 files changed, 3 insertions(+)\n create mode 100644 file with space.txt\n create mode 100644 notes.txt\n create mode 100644 sub/nested.txt\n",
+      "stderr": ""
+    },
+    {
+      "label": "stage notes update",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/git",
+        "add",
+        "notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "get notes blob",
+      "args": [
+        "git",
+        "-C",
+        "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+        "rev-parse",
+        "HEAD:notes.txt"
+      ],
+      "cwd": "/Users/rocky/snai-project/write-yourself-a-git",
+      "exit_status": 0,
+      "stdout": "4a58007052a65fbc2fc3f910f2855f45a4058e74\n",
+      "stderr": ""
+    },
+    {
+      "label": "status run 1",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "status"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+      "exit_status": 0,
+      "stdout": "On branch master.\nChanges to be committed:\n  modified: notes.txt\n\nChanges not staged for commit:\n  modified: file with space.txt\n\nUntracked files:\n",
+      "stderr": ""
+    },
+    {
+      "label": "status run 2",
+      "args": [
+        "/Users/rocky/snai-project/write-yourself-a-git/wyag",
+        "status"
+      ],
+      "cwd": "/var/folders/y9/pzsrk5ts2tlfnmtthq2wtgx00000gn/T/wyag-treedict-iso-g320nnry/wyag",
+      "exit_status": 0,
+      "stdout": "On branch master.\nChanges to be committed:\n  modified: notes.txt\n\nChanges not staged for commit:\n  modified: file with space.txt\n\nUntracked files:\n",
+      "stderr": ""
+    }
+  ],
+  "checks": [
+    {
+      "assertion": "python version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "git version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "make version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "emacs version command succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "native wyag-tests.sh suite passes",
+      "passed": true
+    },
+    {
+      "assertion": "native suite executes the focused tree-to-dict test",
+      "passed": true
+    },
+    {
+      "assertion": "wyag repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "reference Git repository initializes",
+      "passed": true
+    },
+    {
+      "assertion": "tree_to_dict returns a dict on missing HEAD",
+      "passed": true
+    },
+    {
+      "assertion": "tree_to_dict on missing dependency returns empty dict",
+      "passed": true
+    },
+    {
+      "assertion": "tree_to_dict on nonexistent ref returns empty dict",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage initial files exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "commit initial state exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "stage notes update exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "success dict contains notes.txt",
+      "passed": true
+    },
+    {
+      "assertion": "success dict contains file with space.txt",
+      "passed": true
+    },
+    {
+      "assertion": "success dict recursively contains sub/nested.txt",
+      "passed": true
+    },
+    {
+      "assertion": "get notes blob exits successfully",
+      "passed": true
+    },
+    {
+      "assertion": "tree_to_dict maps notes.txt to correct blob SHA",
+      "passed": true
+    },
+    {
+      "assertion": "status run 1 succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "status run 2 succeeds",
+      "passed": true
+    },
+    {
+      "assertion": "isolated environment guarantees deterministic output",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "tool_versions": {
+    "python": "Python 3.15.2",
+    "git": "git version 2.55.0",
+    "make": "GNU Make 3.81",
+    "emacs": "GNU Emacs 31.1"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "notes.txt": {
+      "initial": "alpha\n",
+      "updated": "alpha updated\n",
+      "expected": "staged"
+    },
+    "file with space.txt": {
+      "initial": "space initial\n",
+      "updated": "space modified\n",
+      "expected": "unstaged"
+    }
+  },
+  "environment_isolation": {
+    "missing_dependency_branch": "tree_to_dict on unborn HEAD or missing ref returns empty dict cleanly",
+    "success_branch": "tree_to_dict on valid commit tree recursively maps paths to blob SHAs",
+    "determinism": "Local config isolation (GIT_CONFIG_NOSYSTEM=1, GIT_CONFIG_GLOBAL=/dev/null) ensures identical outputs across runs"
+  },
+  "normalization": [
+    "Baseline commit dates and author/committer identity are fixed.",
+    "Timestamps and author metadata are normalized across Git and wyag."
+  ]
+}

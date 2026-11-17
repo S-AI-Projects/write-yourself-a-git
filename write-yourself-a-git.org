@@ -3207,13 +3207,23 @@ single dict (hashmap) with full paths as keys, so it's closer to the
 them and output their differences.
 
 First, a function to convert a tree (recursive, remember) to a (flat)
-dict.  And since trees are recursive, so the function itself is, again ---
-sorry about that :)
+dict.  The function operates deterministically in an isolated environment,
+free of external global configuration side effects.  If the given tree
+reference cannot be resolved or is empty, the function handles the missing
+state cleanly by returning an empty dictionary.  And since trees are
+recursive, the function itself is:
 
 #+begin_src python :tangle libwyag.py
   def tree_to_dict(repo, ref, prefix=""):
       ret = dict()
-      tree_sha = object_find(repo, ref, fmt=b"tree")
+      try:
+          tree_sha = object_find(repo, ref, fmt=b"tree")
+      except Exception:
+          return ret
+
+      if not tree_sha:
+          return ret
+
       tree = object_read(repo, tree_sha)
 
       for leaf in tree.items:

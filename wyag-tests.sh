@@ -194,6 +194,32 @@ set -e
 cd ..
 cmp file1 file2
 
+step "tree-to-dict isolates environment dependencies"
+"$wyag" init treedict-iso-repo
+cd treedict-iso-repo
+# Missing tree / initial state (no commits yet): status should handle missing HEAD tree cleanly
+GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null "$wyag" status > ../treedict-init.out
+test -s ../treedict-init.out
+
+# Now add a commit with nested subdirectories
+echo "alpha" > notes.txt
+mkdir -p sub/dir
+echo "nested" > sub/dir/file.txt
+git add notes.txt sub/dir/file.txt
+GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
+GIT_AUTHOR_NAME="wyag-tests.sh" \
+GIT_AUTHOR_EMAIL="wyag@example.com" \
+GIT_COMMITTER_DATE="2010-01-01 01:02:03 +0100" \
+GIT_COMMITTER_NAME="wyag-tests.sh" \
+GIT_COMMITTER_EMAIL="wyag@example.com" \
+git commit --no-gpg-sign -m "iso commit" > /dev/null
+
+# Determinism test: multiple runs under isolated environment yield identical status output
+GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null "$wyag" status > ../treedict-run1.out
+GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null "$wyag" status > ../treedict-run2.out
+cmp ../treedict-run1.out ../treedict-run2.out
+cd ..
+
 
 
 
