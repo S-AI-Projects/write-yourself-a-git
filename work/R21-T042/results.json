@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "active_branch_resolution",
+      "status": "PASS",
+      "output": "On branch release-2.0."
+    },
+    {
+      "name": "detached_head_resolution",
+      "status": "PASS",
+      "output": "HEAD detached at 153c4c714fddea98951652f7a74af293c299f2f4"
+    }
+  ],
+  "passed": true
+}

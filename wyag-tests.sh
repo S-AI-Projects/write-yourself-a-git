@@ -197,6 +197,26 @@ cmp file1 file2
 
 
 
+step "cmd_status_branch isolation"
+branch_testdir="$testdir/status_branch_test"
+mkdir -p "$branch_testdir"
+cd "$branch_testdir"
+git init -b feature-test > /dev/null
+echo "test" > notes.txt
+git add notes.txt
+GIT_AUTHOR_NAME="Tester" GIT_AUTHOR_EMAIL="test@example.com" GIT_COMMITTER_NAME="Tester" GIT_COMMITTER_EMAIL="test@example.com" git commit -m "commit on branch" > /dev/null
+
+out1=$("$wyag" status)
+echo "$out1" | grep -q "On branch feature-test."
+
+commit_sha=$(git rev-parse HEAD)
+git checkout "$commit_sha" > /dev/null 2>&1
+out2=$("$wyag" status)
+echo "$out2" | grep -q "HEAD detached at"
+
+cd ..
+rm -rf "$branch_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

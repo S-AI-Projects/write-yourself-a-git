@@ -3185,8 +3185,10 @@ We either return its name, or =False=.
 #+end_src
 
 Based on this, we can write the first of the three =cmd_status_*=
-functions the bridge calls.  This one prints the name of the active
-branch, or the hash of the detached HEAD:
+functions the bridge calls.  This function prints the name of the active
+branch, or the commit hash if HEAD is in a detached state.  Its execution is
+fully isolated from external processes and global user environment, relying
+only on repository-local configuration and =.git/HEAD= state:
 
 #+begin_src python :tangle libwyag.py
   def cmd_status_branch(repo):

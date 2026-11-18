@@ -1,0 +1,9 @@
+{
+  "task": "R21-T042",
+  "item": "cmd_status_branch",
+  "scenarios": [
+    "named active branch",
+    "detached HEAD state",
+    "environment isolation with sanitized environment"
+  ]
+}
