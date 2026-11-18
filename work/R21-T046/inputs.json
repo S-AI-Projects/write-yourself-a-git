@@ -1,0 +1,10 @@
+{
+  "task": "R21-T046",
+  "function": "commit_create",
+  "characterization_cases": [
+    "root commit without parent",
+    "child commit with parent SHA",
+    "timezone offset formatting",
+    "commit message trimming"
+  ]
+}

@@ -197,6 +197,36 @@ cmp file1 file2
 
 
 
+step "commit_create characterization"
+commit_testdir="$testdir/commit_create_char_test"
+mkdir -p "$commit_testdir"
+cd "$commit_testdir"
+"$wyag" init . > /dev/null
+git config user.name "Tester"
+git config user.email "tester@example.com"
+
+echo "alpha" > notes.txt
+echo "space data" > "file with space.txt"
+"$wyag" add notes.txt "file with space.txt"
+"$wyag" commit -m "Root commit" > /dev/null
+
+root_sha=$(git rev-parse HEAD)
+[ -n "$root_sha" ]
+
+echo "beta" > notes.txt
+"$wyag" add notes.txt
+"$wyag" commit -m "Second commit" > /dev/null
+
+second_sha=$(git rev-parse HEAD)
+[ -n "$second_sha" ]
+[ "$root_sha" != "$second_sha" ]
+
+parent_sha=$(git rev-parse HEAD~1)
+[ "$parent_sha" = "$root_sha" ]
+
+cd ..
+rm -rf "$commit_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

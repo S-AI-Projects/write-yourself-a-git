@@ -3854,33 +3854,28 @@ the commit object and updating HEAD will be way easier.  Just remember
 that what this function /does/ is built and store as many tree objects
 as needed to represent the index, and return the root tree's SHA-1.
 
-The function to create a commit object is simple enough, it just takes
-some arguments: the hash of the tree, the hash of the parent commit,
-the author's identity (a string), the timestamp and timezone delta,
-and the message:
-
-# @TODO Explain them!
+The function to create a commit object has a focused responsibility:
+assemble a commit object from its components (root tree hash, optional parent commit,
+author string, datetime object, and commit message), format author/committer headers
+with timestamp and timezone offset, and write the object to the repository database:
 
 #+begin_src python :tangle libwyag.py
   def commit_create(repo, tree, parent, author, timestamp, message):
-  # Note: for the timestamp argument, you must provide a datetime object.
-      commit = GitCommit() # Create the new commit object.
+      commit = GitCommit()
       commit.kvlm[b"tree"] = tree.encode("ascii")
       if parent:
           commit.kvlm[b"parent"] = parent.encode("ascii")
 
-      # Trim message and add a trailing \n
       message = message.strip() + "\n"
-      # Format timezone
+      # Format timezone: separate sign from magnitude for clarity
       offset = int(timestamp.astimezone().utcoffset().total_seconds())
-      hours = offset // 3600
-      minutes = (offset % 3600) // 60
-      tz = "{}{:02}{:02}".format("+" if offset > 0 else "-", hours, minutes)
+      hours = abs(offset) // 3600
+      minutes = (abs(offset) % 3600) // 60
+      tz = "{}{:02d}{:02d}".format("+" if offset >= 0 else "-", hours, minutes)
 
-      author = author + " " + str(int(timestamp.timestamp())) + " " + tz
-
-      commit.kvlm[b"author"] = author.encode("utf8")
-      commit.kvlm[b"committer"] = author.encode("utf8")
+      author_field = f"{author} {int(timestamp.timestamp())} {tz}".encode("utf8")
+      commit.kvlm[b"author"] = author_field
+      commit.kvlm[b"committer"] = author_field
       commit.kvlm[None] = message.encode("utf8")
 
       return object_write(commit, repo)

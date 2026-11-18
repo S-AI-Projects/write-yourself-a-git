@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "commit_create_characterization",
+      "status": "PASS",
+      "root_sha": "6d061ca8491bf9b6d06617e696de6d11f39be32d",
+      "child_sha": "bbb37941b8766a50e57211729dca982bf2f7b626",
+      "parent_verified": true
+    }
+  ],
+  "passed": true
+}
