@@ -1,0 +1,16 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "commit_state_transition",
+      "status": "PASS",
+      "head_commit": "bafca131a3a37cef18d8f7b0e0cc967f2344f88e",
+      "unrelated_unchanged": true
+    }
+  ],
+  "passed": true
+}

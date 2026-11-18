@@ -197,6 +197,30 @@ cmp file1 file2
 
 
 
+step "cmd_commit state transition"
+commit_testdir="$testdir/commit_transition_test"
+mkdir -p "$commit_testdir"
+cd "$commit_testdir"
+"$wyag" init . > /dev/null
+git config user.name "Tester"
+git config user.email "tester@example.com"
+
+echo "alpha" > notes.txt
+echo "space content" > "file with space.txt"
+echo "unrelated unstaged" > unrelated.txt
+"$wyag" add notes.txt "file with space.txt"
+
+unrelated_before=$(cat unrelated.txt)
+"$wyag" commit -m "Commit state transition" > /dev/null
+
+new_head=$(git rev-parse HEAD)
+[ -n "$new_head" ]
+unrelated_after=$(cat unrelated.txt)
+[ "$unrelated_before" = "$unrelated_after" ]
+
+cd ..
+rm -rf "$commit_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

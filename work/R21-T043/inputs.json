@@ -1,0 +1,14 @@
+{
+  "task": "R21-T043",
+  "command": "cmd_commit",
+  "staged_files": [
+    "notes.txt",
+    "file with space.txt"
+  ],
+  "unrelated_files": [
+    "unrelated.txt"
+  ],
+  "unstaged_files": [
+    "notes.txt modified after stage"
+  ]
+}

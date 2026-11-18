@@ -3887,7 +3887,11 @@ and the message:
 #+end_src
 
 All what remains to write is =cmd_commit=, the bridge function to the
-=wyag commit= command:
+=wyag commit= command.  Executing a commit creates a new tree from the current
+index, writes a commit object pointing to that tree and parent HEAD, and updates
+the active branch reference to the new commit SHA (or updates HEAD directly if detached).
+Unrelated state, including unstaged worktree modifications, untracked files, and
+other branch references, remain strictly unaffected by the commit state transition:
 
 #+begin_src python :tangle libwyag.py
   def cmd_commit(args):
@@ -3911,7 +3915,7 @@ All what remains to write is =cmd_commit=, the bridge function to the
               fd.write(commit + "\n")
       else: # Otherwise, we update HEAD itself.
           with open(repo_file(repo, "HEAD"), "w") as fd:
-              fd.write("\n")
+              fd.write(commit + "\n")
 #+end_src
 
 And we're done!
