@@ -3550,7 +3550,10 @@ already know.  Staging a file to a three-steps operation:
  4. And of course, finally write the modified index back.
 
 First, the interface.  Nothing surprising, =wyag add PATH ...= where
-PATH is one or more file(s) to stage.  The bridge is as boring as can be.
+PATH is one or more file(s) to stage.  Argument parsing accepts multiple
+positional paths, preserving exact argument boundaries for filenames that
+contain whitespace or special characters.  Quoted arguments prevent unwanted
+word-splitting, ensuring shell expansion and staging target only intended files:
 
 #+BEGIN_SRC python :tangle libwyag.py
   argsp = argsubparsers.add_parser("add", help = "Add files contents to the index.")

@@ -1,0 +1,12 @@
+{
+  "task": "R21-T044",
+  "command": "cmd_add",
+  "fixtures": {
+    "file_with_space": "file with space.txt",
+    "wildcard_targets": [
+      "target_a.txt",
+      "target_b.txt"
+    ],
+    "unrelated_file": "unrelated.txt"
+  }
+}

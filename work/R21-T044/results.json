@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "argument_boundaries_and_isolation",
+      "status": "PASS",
+      "staged_entries": [
+        "target_a.txt",
+        "file with space.txt",
+        "target_b.txt"
+      ]
+    }
+  ],
+  "passed": true
+}

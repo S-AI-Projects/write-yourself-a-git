@@ -197,6 +197,32 @@ cmp file1 file2
 
 
 
+step "cmd_add path quoting and argument boundaries"
+add_testdir="$testdir/add_quoting_test"
+mkdir -p "$add_testdir"
+cd "$add_testdir"
+"$wyag" init . > /dev/null
+
+echo "alpha" > notes.txt
+echo "space data" > "file with space.txt"
+echo "wildcard target 1" > target_1.txt
+echo "wildcard target 2" > target_2.txt
+echo "unrelated data" > other.dat
+
+"$wyag" add "file with space.txt" target_*.txt
+
+ls_out=$("$wyag" ls-files)
+echo "$ls_out" | grep -q "file with space.txt"
+echo "$ls_out" | grep -q "target_1.txt"
+echo "$ls_out" | grep -q "target_2.txt"
+if echo "$ls_out" | grep -q "other.dat"; then
+    echo "Failure: unrelated file was staged"
+    exit 1
+fi
+
+cd ..
+rm -rf "$add_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
