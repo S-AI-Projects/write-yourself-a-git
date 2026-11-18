@@ -1,0 +1,9 @@
+{
+  "task": "R21-T045",
+  "command": "ref_list / show-ref",
+  "fixtures": {
+    "branch": "refs/heads/master",
+    "tag": "refs/tags/v1.0",
+    "secondary_branch": "refs/heads/feature"
+  }
+}

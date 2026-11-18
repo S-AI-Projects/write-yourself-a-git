@@ -197,6 +197,28 @@ cmp file1 file2
 
 
 
+step "show-ref and ref_list usage"
+ref_testdir="$testdir/ref_list_test"
+mkdir -p "$ref_testdir"
+cd "$ref_testdir"
+"$wyag" init . > /dev/null
+git config user.name "Tester"
+git config user.email "tester@example.com"
+
+echo "alpha" > notes.txt
+echo "space content" > "file with space.txt"
+git add notes.txt "file with space.txt"
+GIT_AUTHOR_NAME="Tester" GIT_AUTHOR_EMAIL="test@example.com" GIT_COMMITTER_NAME="Tester" GIT_COMMITTER_EMAIL="test@example.com" git commit -m "initial commit" > /dev/null
+git tag v1.0 > /dev/null
+
+wyag_refs=$("$wyag" show-ref)
+[ -n "$wyag_refs" ]
+echo "$wyag_refs" | grep -q "refs/heads/master"
+echo "$wyag_refs" | grep -q "refs/tags/v1.0"
+
+cd ..
+rm -rf "$ref_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

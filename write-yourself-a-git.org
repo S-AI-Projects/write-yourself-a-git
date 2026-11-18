@@ -2089,13 +2089,15 @@ SHA-1 identifier:
 
 Let's create two small functions, and implement the =show-ref=
 command --- it just lists all references in a repository.  First, a
-stupid recursive function to collect refs and return them as a dict:
+recursive function to collect refs and return them as a nested dictionary:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def ref_list(repo, path=None):
       if not path:
           path = repo_dir(repo, "refs")
       ret = dict()
+      if not os.path.exists(path):
+          return ret
       # Git shows refs sorted.  To do the same, we sort the output of
       # listdir
       for f in sorted(os.listdir(path)):
@@ -2107,6 +2109,16 @@ stupid recursive function to collect refs and return them as a dict:
 
       return ret
 #+END_SRC
+
+For example, given a repository with branch =master= and tag =v1.0=:
+#+begin_example
+  $ wyag show-ref
+  0123456789abcdef0123456789abcdef01234567 refs/heads/master
+  89abcdef0123456789abcdef0123456789abcdef refs/tags/v1.0
+#+end_example
+Internally, =ref_list= traverses =.git/refs= recursively and returns
+={'heads': {'master': '<sha>'}, 'tags': {'v1.0': '<sha>'}}=, which =show_ref=
+then formats and outputs.
 
 And, as usual, a subparser, a bridge, and a (recursive) worker function:
 

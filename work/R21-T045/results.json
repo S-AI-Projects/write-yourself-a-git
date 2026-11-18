@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "usage_example_and_output_verification",
+      "status": "PASS",
+      "wyag_refs": [
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/heads/feature",
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/heads/master",
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/tags/v1.0"
+      ],
+      "git_refs": [
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/heads/feature",
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/heads/master",
+        "bd4d7a7b5079fc9682b510c62da765a397e31f2a refs/tags/v1.0"
+      ]
+    }
+  ],
+  "passed": true
+}
