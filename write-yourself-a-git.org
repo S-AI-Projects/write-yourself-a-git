@@ -3152,7 +3152,16 @@ The public interface is dead simple, our status will take no argument:
   argsp = argsubparsers.add_parser("status", help = "Show the working tree status.")
 #+END_src
 
-And the bridge function just calls the three component functions in order:
+The =status= command inspects and displays the working tree state against
+the repository index and HEAD reference.  Its execution contract is strictly
+read-only: it reports the current branch or detached HEAD state, staged
+changes (HEAD vs index), and unstaged or untracked changes (index vs worktree)
+without mutating repository objects, refs, the index, or worktree files.
+When invoked outside a valid Git worktree, repository discovery fails and
+execution halts with a non-zero status.
+
+The bridge function locates the repository, reads the index, and invokes
+the three component functions in order:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_status(_):

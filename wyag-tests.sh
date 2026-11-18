@@ -197,6 +197,28 @@ cmp file1 file2
 
 
 
+step "cmd_status contract"
+status_dir="$testdir/cmd_status_contract"
+mkdir -p "$status_dir"
+cd "$status_dir"
+git init > /dev/null
+echo "alpha" > notes.txt
+echo "space content" > "file with space.txt"
+echo "baseline" > baseline.txt
+git add notes.txt "file with space.txt" baseline.txt
+GIT_AUTHOR_NAME="Tester" GIT_AUTHOR_EMAIL="test@example.com" GIT_COMMITTER_NAME="Tester" GIT_COMMITTER_EMAIL="test@example.com" git commit -m "initial" > /dev/null
+
+echo "staged change" > notes.txt
+git add notes.txt
+echo "unstaged change" > "file with space.txt"
+
+status_out=$("$wyag" status)
+echo "$status_out" | grep -q "modified: notes.txt"
+echo "$status_out" | grep -q "modified: file with space.txt"
+
+cd ..
+rm -rf "$status_dir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

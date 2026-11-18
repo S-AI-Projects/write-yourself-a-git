@@ -1,0 +1,16 @@
+{
+  "task": "R21-T041",
+  "command": "cmd_status",
+  "fixture": {
+    "file_1": "notes.txt",
+    "file_1_content": "alpha\n",
+    "file_2": "file with space.txt",
+    "file_2_content": "space test\n",
+    "staged_change": "notes.txt updated\n",
+    "unstaged_change": "file with space.txt updated\n"
+  },
+  "edge_cases": [
+    "invocation outside git repository",
+    "ordinary success with staged and unstaged entries"
+  ]
+}
