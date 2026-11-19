@@ -197,6 +197,42 @@ cmp file1 file2
 
 
 
+step "object_read argument boundaries"
+obj_testdir="$testdir/object_read_test"
+mkdir -p "$obj_testdir"
+cd "$obj_testdir"
+"$wyag" init . > /dev/null
+echo "alpha" > notes.txt
+blob_sha=$("$wyag" hash-object -w notes.txt)
+
+python3 -c '
+import sys
+sys.path.insert(0, "'$(dirname "$wyag")'")
+import libwyag
+
+repo = libwyag.repo_find(".")
+assert repo is not None
+
+# 1. Valid SHA reads successfully
+obj = libwyag.object_read(repo, "'"$blob_sha"'")
+assert isinstance(obj, libwyag.GitBlob)
+assert obj.blobdata == b"alpha\n"
+
+# 2. Boundary: None returns None
+assert libwyag.object_read(repo, None) is None
+
+# 3. Boundary: Empty string returns None
+assert libwyag.object_read(repo, "") is None
+
+# 4. Boundary: Single character string (< 2 chars) returns None
+assert libwyag.object_read(repo, "a") is None
+
+# 5. Boundary: Non-existent 40-char SHA returns None
+assert libwyag.object_read(repo, "0000000000000000000000000000000000000000") is None
+'
+cd ..
+rm -rf "$obj_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

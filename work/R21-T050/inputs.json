@@ -1,0 +1,15 @@
+{
+  "task": "R21-T050",
+  "function": "object_read",
+  "boundary_cases": [
+    "valid_sha_blob_read",
+    "none_argument_returns_none",
+    "empty_string_returns_none",
+    "single_char_returns_none",
+    "invalid_type_returns_none",
+    "nonexistent_40_char_hex_returns_none",
+    "bytes_encoded_sha_handled",
+    "malformed_header_delimiter_raises_exception",
+    "worktree_fixture_with_space_and_staged_unstaged_states"
+  ]
+}

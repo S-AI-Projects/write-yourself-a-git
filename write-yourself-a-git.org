@@ -841,6 +841,13 @@ object type and its size.   From the type, we determine the actual
 class to use.   We convert the size to a Python integer, and check if
 it matches.
 
+To handle argument boundaries robustly, =object_read= validates that
+=sha= is a non-empty string or bytes sequence with at least 2 characters.
+Empty, null, or truncated SHA arguments gracefully return =None= rather
+than triggering unhandled indexing or type exceptions.  Similarly, missing
+files or malformed object headers with missing delimiters are handled
+defensively.
+
 When all is done, we just call the correct constructor for that
 object's format.
 
@@ -849,9 +856,15 @@ object's format.
       """Read object sha from Git repository repo.  Return a
       GitObject whose exact type depends on the object."""
 
+      if not sha or not isinstance(sha, (str, bytes)) or len(sha) < 2:
+          return None
+
+      if isinstance(sha, bytes):
+          sha = sha.decode("ascii", errors="replace")
+
       path = repo_file(repo, "objects", sha[0:2], sha[2:])
 
-      if not os.path.isfile(path):
+      if not path or not os.path.isfile(path):
           return None
 
       with open (path, "rb") as f:
@@ -859,10 +872,14 @@ object's format.
 
           # Read object type
           x = raw.find(b' ')
+          if x == -1:
+              raise Exception(f"Malformed object {sha}: missing type header delimiter")
           fmt = raw[0:x]
 
           # Read and validate object size
           y = raw.find(b'\x00', x)
+          if y == -1:
+              raise Exception(f"Malformed object {sha}: missing null terminator in header")
           size = int(raw[x:y].decode("ascii"))
           if size != len(raw)-y-1:
               raise Exception(f"Malformed object {sha}: bad length")

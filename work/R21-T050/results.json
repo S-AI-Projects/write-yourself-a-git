@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "valid_sha",
+      "sha": "34eb89c591ef305ee3014e4011d9dca8b5491e67",
+      "type": "blob",
+      "status": "PASS"
+    },
+    {
+      "name": "none_input",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "empty_string_input",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "single_char_input",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "invalid_type_input",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "nonexistent_sha",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "bytes_encoded_sha",
+      "status": "PASS"
+    },
+    {
+      "name": "malformed_header_exception",
+      "exception_caught": true,
+      "status": "PASS"
+    },
+    {
+      "name": "git_cli_comparison",
+      "status_output": [
+        "A  \"file with space.txt\"",
+        "AM notes.txt",
+        "?? .gitconfig"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "passed": true
+}
