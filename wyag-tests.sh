@@ -136,6 +136,19 @@ git ls-tree HEAD > ../file2
 cd ..
 cmp file1 file2
 
+step "tree_to_dict tested usage example: R21-T055"
+cd left
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo = libwyag.repo_find(".")
+d = libwyag.tree_to_dict(repo, "HEAD")
+assert "hebraic-letter.txt" in d
+assert "a/greek_letters" in d
+'
+cd ..
+
 step checkout
 # Git and Wyag syntax are different here
 cd left

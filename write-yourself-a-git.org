@@ -3210,8 +3210,23 @@ First, a function to convert a tree (recursive, remember) to a (flat)
 dict.  And since trees are recursive, so the function itself is, again ---
 sorry about that :)
 
+For example, given a commit with tracked files:
+#+begin_example python
+>>> repo = repo_find()
+>>> flat_map = tree_to_dict(repo, "HEAD")
+>>> print(flat_map)
+{'notes.txt': '...', 'a/greek_letters': '...'}
+#+end_example
+
 #+begin_src python :tangle libwyag.py
   def tree_to_dict(repo, ref, prefix=""):
+      """Flatten a tree object recursively into a dict mapping file paths to blob SHAs.
+
+      Example:
+          repo = repo_find()
+          tree_dict = tree_to_dict(repo, "HEAD")
+          # Returns: {'file.txt': '2bb80...', 'dir/sub.txt': '7a523...'}
+      """
       ret = dict()
       tree_sha = object_find(repo, ref, fmt=b"tree")
       tree = object_read(repo, tree_sha)
