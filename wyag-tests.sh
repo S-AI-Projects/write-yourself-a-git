@@ -168,6 +168,18 @@ git ls-files > ../file2
 cd ..
 cmp file1 file2
 
+step "ls-files with spaces and wildcards: R21-T054"
+cd left
+touch "file with space.txt"
+git add "file with space.txt"
+"$wyag" ls-files > ../file1
+cd ../right
+touch "file with space.txt"
+git add "file with space.txt"
+git ls-files > ../file2
+cd ..
+cmp file1 file2
+
 gitignore_prepare() {
     mkdir -p a/b/c/
     echo "!*.txt" > a/b/c/.gitignore

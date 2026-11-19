@@ -1,0 +1,7 @@
+{
+  "filenames_tested": [
+    "my spaced document.txt",
+    "archive[v1]*.dat"
+  ],
+  "tests_run": 3
+}

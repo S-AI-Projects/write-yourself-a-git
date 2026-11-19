@@ -1,0 +1,35 @@
+[
+  {
+    "test": "index_read_preserves_spaces_and_wildcards",
+    "entry_names": [
+      "archive[v1]*.dat",
+      "my spaced document.txt",
+      "notes.txt",
+      "staged file.txt"
+    ],
+    "space_file_present": true,
+    "wildcard_file_present": true,
+    "status": "PASS"
+  },
+  {
+    "test": "ls_files_comparison_with_git_cli",
+    "git_files": [
+      "archive[v1]*.dat",
+      "my spaced document.txt",
+      "notes.txt",
+      "staged file.txt"
+    ],
+    "wyag_files": [
+      "archive[v1]*.dat",
+      "my spaced document.txt",
+      "notes.txt",
+      "staged file.txt"
+    ],
+    "status": "PASS"
+  },
+  {
+    "test": "empty_index_read",
+    "entry_count": 0,
+    "status": "PASS"
+  }
+]

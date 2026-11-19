@@ -2705,6 +2705,12 @@ produce more elegant code in C than in Python…)
 
 #+BEGIN_SRC python :tangle libwyag.py
   def index_read(repo):
+      """Read and parse the Git index file (format v2).
+
+      Preserves exact entry paths (including paths containing spaces or
+      glob/wildcard characters) directly from the index binary payload
+      without undergoing shell expansion or word-splitting.
+      """
       index_file = repo_file(repo, "index")
 
       # New repositories have no index!
