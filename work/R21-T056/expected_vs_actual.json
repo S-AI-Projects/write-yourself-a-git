@@ -1,0 +1,17 @@
+[
+  {
+    "test": "checkout_to_empty_directory",
+    "target": "/var/folders/bp/98_z7d794xzfz4g87ty4gr3m0000gn/T/tmppdwmnx68/checkout_target1",
+    "status": "PASS"
+  },
+  {
+    "test": "checkout_idempotent_existing_directories",
+    "target": "/var/folders/bp/98_z7d794xzfz4g87ty4gr3m0000gn/T/tmppdwmnx68/checkout_target2",
+    "status": "PASS"
+  },
+  {
+    "test": "wyag_checkout_cli",
+    "actual_rc": 0,
+    "status": "PASS"
+  }
+]

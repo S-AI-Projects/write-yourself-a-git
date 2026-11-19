@@ -147,6 +147,14 @@ cd ..
 diff -r temp1 temp2
 rm -rf temp1 temp2
 
+step "tree_checkout characterization tests: R21-T056"
+cd left
+mkdir -p ../temp_checkout
+"$wyag" checkout HEAD ../temp_checkout
+test -f ../temp_checkout/a/greek_letters
+rm -rf ../temp_checkout
+cd ..
+
 step rev-parse
 cd left
 "$wyag" rev-parse HEAD  > ../file1
