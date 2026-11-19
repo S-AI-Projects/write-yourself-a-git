@@ -2433,6 +2433,7 @@ steps, since tags themselves can be tagged)
 
 #+BEGIN_SRC python :tangle libwyag.py
   def object_find(repo, name, fmt=None, follow=True):
+      """Find an object in repo by name/reference, optionally filtering by format and following indirections."""
       sha = object_resolve(repo, name)
 
       if not sha:

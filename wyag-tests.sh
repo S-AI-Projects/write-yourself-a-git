@@ -99,6 +99,22 @@ git cat-file tree HEAD > ../file2
 cd ..
 cmp file1 file2
 
+step "object_find regression protection: R21-T059"
+cd left
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo = libwyag.repo_find(".")
+commit_sha = libwyag.object_find(repo, "HEAD", fmt=b"commit", follow=False)
+assert commit_sha is not None
+tree_sha = libwyag.object_find(repo, "HEAD", fmt=b"tree", follow=True)
+assert tree_sha is not None
+no_follow = libwyag.object_find(repo, "HEAD", fmt=b"tree", follow=False)
+assert no_follow is None
+'
+cd ..
+
 step "Add some directories and commits (git only, nothing is tested)" #@FIXME Add wyag commit
 cd left
 mkdir a
