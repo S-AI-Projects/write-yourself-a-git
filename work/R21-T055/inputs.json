@@ -1,0 +1,8 @@
+{
+  "files_tested": [
+    "notes.txt",
+    "my test file.txt",
+    "subdir/nested/leaf.txt"
+  ],
+  "tests_run": 2
+}

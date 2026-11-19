@@ -1,0 +1,17 @@
+[
+  {
+    "test": "complete_usage_example_tree_to_dict",
+    "paths_in_tree": [
+      "my test file.txt",
+      "notes.txt",
+      "staged.txt",
+      "subdir/nested/leaf.txt"
+    ],
+    "status": "PASS"
+  },
+  {
+    "test": "nonexistent_ref_error",
+    "exception_raised": true,
+    "status": "PASS"
+  }
+]
