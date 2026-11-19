@@ -2703,6 +2703,13 @@ that share the same byte.
 built in O(n) time in most cases.  This kind of approach tends to
 produce more elegant code in C than in Python…)
 
+When reading the index file header, we validate both the 12-byte minimum
+length and the expected ="DIRC"= (Directory Cache) signature and format version.
+If an index file is corrupt, truncated, or formatted for an unsupported version,
+=index_read= raises a descriptive exception with actionable diagnostics so
+commands like =status= or =ls-files= fail predictably and explain the failure
+rather than terminating with a bare assertion failure.
+
 #+BEGIN_SRC python :tangle libwyag.py
   def index_read(repo):
       index_file = repo_file(repo, "index")
@@ -2714,11 +2721,16 @@ produce more elegant code in C than in Python…)
       with open(index_file, 'rb') as f:
           raw = f.read()
 
+      if len(raw) < 12:
+          raise Exception(f"Corrupt index file: header is shorter than 12 bytes ({len(raw)} bytes found). Rebuild index or remove corrupt .git/index.")
+
       header = raw[:12]
       signature = header[:4]
-      assert signature == b"DIRC" # Stands for "DirCache"
+      if signature != b"DIRC":
+          raise Exception(f"Invalid index file signature: expected b'DIRC' (DirCache), got {signature!r}. The index may be corrupted.")
       version = int.from_bytes(header[4:8], "big")
-      assert version == 2, "wyag only supports index file version 2"
+      if version != 2:
+          raise Exception(f"Unsupported index file version {version}: wyag only supports index file version 2.")
       count = int.from_bytes(header[8:12], "big")
 
       entries = list()

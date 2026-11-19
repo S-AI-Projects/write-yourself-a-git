@@ -197,6 +197,32 @@ cmp file1 file2
 
 
 
+step "index_read diagnostic check"
+index_testdir="$testdir/index_read_test"
+mkdir -p "$index_testdir"
+cd "$index_testdir"
+"$wyag" init . > /dev/null
+echo "alpha" > notes.txt
+"$wyag" add notes.txt
+
+# Test corrupted index with invalid signature
+printf "CORRUPT_DATA_HEADER" > .git/index
+set +e
+err_output=$("$wyag" ls-files 2>&1)
+exit_status=$?
+set -e
+[ $exit_status -ne 0 ]
+echo "$err_output" | grep -q "Invalid index file signature"
+
+# Corrected invocation: recover index and re-run ls-files successfully
+rm -f .git/index
+"$wyag" add notes.txt
+ls_out=$("$wyag" ls-files)
+[ "$ls_out" = "notes.txt" ]
+
+cd ..
+rm -rf "$index_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

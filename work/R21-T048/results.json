@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "truncated_header_failure",
+      "exit_code": 1,
+      "error_message": "header is shorter than 12 bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid_signature_failure",
+      "exit_code": 1,
+      "error_message": "Invalid index file signature",
+      "status": "PASS"
+    },
+    {
+      "name": "unsupported_version_failure",
+      "exit_code": 1,
+      "error_message": "Unsupported index file version 4",
+      "status": "PASS"
+    },
+    {
+      "name": "recovered_invocation_success",
+      "exit_code": 0,
+      "files_found": [
+        "file with space.txt",
+        "notes.txt"
+      ],
+      "status": "PASS"
+    },
+    {
+      "name": "git_status_verification",
+      "status_output": [
+        "A  \"file with space.txt\"",
+        "AM notes.txt",
+        "?? .gitconfig"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "passed": true
+}

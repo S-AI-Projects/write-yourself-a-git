@@ -1,0 +1,12 @@
+{
+  "task": "R21-T048",
+  "function": "index_read",
+  "test_cases": [
+    "native_test_suite_index_read_step",
+    "truncated_index_header_failure",
+    "corrupt_index_signature_failure",
+    "unsupported_index_version_failure",
+    "recovery_and_corrected_invocation_success",
+    "worktree_fixture_with_space_and_staged_unstaged_states"
+  ]
+}
