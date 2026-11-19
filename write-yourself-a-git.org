@@ -2276,7 +2276,14 @@ And we just need one more function to actually create the tag:
           ref_create(repo, "tags/" + name, sha)
 
   def ref_create(repo, ref_name, sha):
-      with open(repo_file(repo, "refs/" + ref_name), 'w') as fp:
+      """Create a reference under .git/refs/ pointing to sha.
+
+      Records a new ref file while ensuring parent directories exist,
+      leaving other existing references unmodified.
+      """
+      ref_path = repo_file(repo, "refs/" + ref_name)
+      os.makedirs(os.path.dirname(ref_path), exist_ok=True)
+      with open(ref_path, 'w') as fp:
           fp.write(sha + "\n")
 #+end_src
 
