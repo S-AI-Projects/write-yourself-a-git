@@ -2000,16 +2000,19 @@ A wrapper function:
       tree_checkout(repo, obj, os.path.realpath(args.path))
 #+END_SRC
 
-And a function to do the actual work:
+And a function to do the actual work. For directories (=tree= objects),
+we ensure the destination directory exists and recurse; for regular files (=blob= objects),
+we write the binary data directly to disk.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def tree_checkout(repo, tree, path):
+      """Recursively check out a tree object into target directory path."""
       for item in tree.items:
           obj = object_read(repo, item.sha)
           dest = os.path.join(path, item.path)
 
           if obj.fmt == b'tree':
-              os.mkdir(dest)
+              os.makedirs(dest, exist_ok=True)
               tree_checkout(repo, obj, dest)
           elif obj.fmt == b'blob':
               # @TODO Support symlinks (identified by mode 12****)
