@@ -3234,7 +3234,15 @@ sorry about that :)
       return ret
 #+end_src
 
-And the command itself:
+The =cmd_status_head_index= function compares the commit tree at HEAD
+against the current index entries.  It partitions files into three distinct
+categories:
+1. Files present in the index with a different hash than in HEAD are staged
+   as *modified*.
+2. Files present in the index but absent from HEAD are staged as *added*.
+3. Files present in HEAD but removed from the index are staged as *deleted*.
+Files whose SHA in the index exactly matches HEAD are unchanged and must not
+trigger any notification.
 
 #+begin_src python :tangle libwyag.py
   def cmd_status_head_index(repo, index):

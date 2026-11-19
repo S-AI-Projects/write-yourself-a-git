@@ -1,0 +1,13 @@
+{
+  "task": "R21-T049",
+  "function": "cmd_status_head_index",
+  "target_condition": "head[entry.name] != entry.sha",
+  "mutant": "head[entry.name] == entry.sha",
+  "cases": [
+    "staged_modified_file",
+    "staged_added_file_with_space",
+    "staged_deleted_file",
+    "unchanged_staged_file",
+    "mutant_rejection_verification"
+  ]
+}

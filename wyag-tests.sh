@@ -197,6 +197,42 @@ cmp file1 file2
 
 
 
+step "cmd_status_head_index regression check"
+status_testdir="$testdir/status_head_index_test"
+mkdir -p "$status_testdir"
+cd "$status_testdir"
+"$wyag" init . > /dev/null
+git config user.name "Tester"
+git config user.email "tester@example.com"
+
+echo "alpha" > notes.txt
+echo "unchanged" > keep.txt
+echo "to delete" > to_delete.txt
+git add notes.txt keep.txt to_delete.txt
+GIT_AUTHOR_NAME="Tester" GIT_AUTHOR_EMAIL="test@example.com" GIT_COMMITTER_NAME="Tester" GIT_COMMITTER_EMAIL="test@example.com" git commit -m "initial commit" > /dev/null
+
+# 1. Modify notes.txt and stage it
+echo "alpha modified" > notes.txt
+"$wyag" add notes.txt
+
+# 2. Add new file with space and stage it
+echo "space content" > "file with space.txt"
+"$wyag" add "file with space.txt"
+
+# 3. Delete to_delete.txt from index
+"$wyag" rm to_delete.txt
+
+# 4. Check status output
+status_output=$("$wyag" status)
+echo "$status_output" | grep -q "modified: notes.txt"
+echo "$status_output" | grep -q "added:    file with space.txt"
+echo "$status_output" | grep -q "deleted:  to_delete.txt"
+# keep.txt must not be reported in staged changes
+! echo "$status_output" | grep -q "modified: keep.txt"
+
+cd ..
+rm -rf "$status_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

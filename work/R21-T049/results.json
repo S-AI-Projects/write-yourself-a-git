@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "status_head_index_classification",
+      "modified": "notes.txt",
+      "added": "file with space.txt",
+      "deleted": "to_delete.txt",
+      "unchanged_kept": "keep.txt",
+      "status": "PASS"
+    },
+    {
+      "name": "mutant_rejection_test",
+      "mutant_detected": true,
+      "mutant_false_positives": [
+        "keep.txt"
+      ],
+      "mutant_false_negatives": [
+        "notes.txt"
+      ],
+      "status": "PASS"
+    },
+    {
+      "name": "git_cli_comparison",
+      "status_output": [
+        "A  \"file with space.txt\"",
+        "MM notes.txt",
+        "D  to_delete.txt",
+        "?? .gitconfig"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "passed": true
+}
