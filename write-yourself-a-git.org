@@ -2876,10 +2876,14 @@ Again, the command parser is trivial:
   argsp.add_argument("path", nargs="+", help="Paths to check")
 #+END_src
 
-And the function is just as simple:
+And the function is just as simple: it resolves the repository, parses all
+active ignore rules using =gitignore_read()=, checks each supplied path in
+sequence with =check_ignore()=, and prints any path that matches an active
+ignore pattern. Paths that are not ignored produce no output.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_check_ignore(args):
+      """Check path(s) against gitignore rules and print matching ignored paths."""
       repo = repo_find()
       rules = gitignore_read(repo)
       for path in args.path:
