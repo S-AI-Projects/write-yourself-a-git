@@ -160,6 +160,14 @@ git rev-parse 8a617  >> ../file2
 cd ..
 cmp file1 file2
 
+step "cmd_tag list and create: R21-T058"
+cd left
+"$wyag" tag > ../tag_empty.txt
+"$wyag" tag mytag HEAD
+"$wyag" tag > ../tag_list.txt
+grep -q "mytag" ../tag_list.txt
+cd ..
+
 step "ls-files "
 cd left
 "$wyag" ls-files > ../file1
