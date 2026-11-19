@@ -194,6 +194,14 @@ set -e
 cd ..
 cmp file1 file2
 
+step "check-ignore contract: R21-T051"
+cd left
+"$wyag" check-ignore a/b/hello.txt > ../contract_ignored.txt
+test -s ../contract_ignored.txt
+"$wyag" check-ignore a/b/c/hello.txt > ../contract_unignored.txt
+test ! -s ../contract_unignored.txt
+cd ..
+
 
 
 

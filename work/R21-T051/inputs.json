@@ -1,0 +1,47 @@
+[
+  {
+    "step": "init",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "init",
+      "/var/folders/bp/98_z7d794xzfz4g87ty4gr3m0000gn/T/tmpeakfbfjb/test_repo"
+    ],
+    "rc": 0
+  },
+  {
+    "case": "ignored_single",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "notes.txt"
+    ],
+    "rc": 0,
+    "out": "notes.txt\n",
+    "err": ""
+  },
+  {
+    "case": "unignored_file_with_space",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "file with space.txt"
+    ],
+    "rc": 0,
+    "out": "",
+    "err": ""
+  },
+  {
+    "case": "mixed_multiple_files",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "notes.txt",
+      "file with space.txt",
+      "app.log",
+      "unstaged.txt"
+    ],
+    "rc": 0,
+    "out": "notes.txt\napp.log\n",
+    "err": ""
+  }
+]

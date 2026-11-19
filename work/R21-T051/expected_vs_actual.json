@@ -1,0 +1,57 @@
+[
+  {
+    "test": "ignored_single_file",
+    "args": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "notes.txt"
+    ],
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "expected_stdout": "notes.txt\n",
+    "actual_stdout": "notes.txt\n",
+    "status": "PASS"
+  },
+  {
+    "test": "unignored_file_with_space",
+    "args": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "file with space.txt"
+    ],
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "expected_stdout": "",
+    "actual_stdout": "",
+    "status": "PASS"
+  },
+  {
+    "test": "mixed_multiple_files",
+    "args": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "notes.txt",
+      "file with space.txt",
+      "app.log",
+      "unstaged.txt"
+    ],
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "expected_stdout": "notes.txt\napp.log\n",
+    "actual_stdout": "notes.txt\napp.log\n",
+    "status": "PASS"
+  },
+  {
+    "test": "nonexistent_ignored_file",
+    "args": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "check-ignore",
+      "nonexistent.log"
+    ],
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "expected_stdout": "nonexistent.log\n",
+    "actual_stdout": "nonexistent.log\n",
+    "status": "PASS"
+  }
+]
