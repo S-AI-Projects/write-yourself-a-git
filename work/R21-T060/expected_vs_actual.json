@@ -1,0 +1,29 @@
+[
+  {
+    "test": "ref_resolve_head_indirect_success",
+    "ref": "HEAD",
+    "resolved_sha": "590bc78119473feb00868fc6008e229786d579e3",
+    "expected_sha": "590bc78119473feb00868fc6008e229786d579e3",
+    "status": "PASS"
+  },
+  {
+    "test": "ref_resolve_direct_tag_success",
+    "ref": "refs/tags/direct-tag",
+    "resolved_sha": "590bc78119473feb00868fc6008e229786d579e3",
+    "status": "PASS"
+  },
+  {
+    "test": "ref_resolve_missing_dependency_branch",
+    "ref": "refs/heads/nonexistent-branch",
+    "expected": null,
+    "actual": null,
+    "status": "PASS"
+  },
+  {
+    "test": "ref_resolve_broken_indirect_pointer",
+    "ref": "refs/broken_indirect",
+    "expected": null,
+    "actual": null,
+    "status": "PASS"
+  }
+]

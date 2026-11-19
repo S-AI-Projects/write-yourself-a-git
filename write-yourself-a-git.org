@@ -2068,6 +2068,10 @@ SHA-1 identifier:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def ref_resolve(repo, ref):
+      """Resolve a reference name or path recursively to its target SHA-1 hash.
+
+      Returns None if the reference file or indirect target does not exist (missing-ref branch).
+      """
       path = repo_file(repo, ref)
 
       # Sometimes, an indirect reference may be broken.  This is normal
@@ -2079,10 +2083,9 @@ SHA-1 identifier:
           return None
 
       with open(path, 'r') as fp:
-          data = fp.read()[:-1]
-          # Drop final \n ^^^^^
+          data = fp.read().strip()
       if data.startswith("ref: "):
-          return ref_resolve(repo, data[5:])
+          return ref_resolve(repo, data[5:].strip())
       else:
           return data
 #+END_SRC
