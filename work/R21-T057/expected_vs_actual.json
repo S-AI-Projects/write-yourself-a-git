@@ -1,0 +1,38 @@
+[
+  {
+    "test": "missing_file_failure_diagnostic",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "hash-object",
+      "nonexistent_file_fixture.txt"
+    ],
+    "expected_rc": 128,
+    "actual_rc": 128,
+    "stderr": "fatal: Cannot open 'nonexistent_file_fixture.txt': No such file or directory",
+    "status": "PASS"
+  },
+  {
+    "test": "corrected_invocation_success",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "hash-object",
+      "nonexistent_file_fixture.txt"
+    ],
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "sha": "f008728db56f4386e401b92e3274cac0e5551642",
+    "matches_git": true,
+    "status": "PASS"
+  },
+  {
+    "test": "file_with_space_hash_object",
+    "cmd": [
+      "/Users/parthmohindroo/project_folder2/wyag",
+      "hash-object",
+      "sample file with space.txt"
+    ],
+    "actual_rc": 0,
+    "sha": "ae0a30962b02e6345657491d7c9f502477db97cc",
+    "status": "PASS"
+  }
+]
