@@ -1,0 +1,15 @@
+{
+  "inputs_log": [
+    {
+      "step": "failure_invocation",
+      "cmd": [
+        "/Users/parthmohindroo/project_folder2/wyag",
+        "hash-object",
+        "nonexistent_file_fixture.txt"
+      ],
+      "rc": 128,
+      "stderr": "fatal: Cannot open 'nonexistent_file_fixture.txt': No such file or directory\n"
+    }
+  ],
+  "tests_run": 3
+}

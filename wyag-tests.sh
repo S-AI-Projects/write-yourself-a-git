@@ -34,6 +34,16 @@ echo "Don't read me" > README
 git hash-object README > hash2
 cmp --quiet hash1 hash2
 
+step "hash-object failure diagnostic and recovery: R21-T057"
+set +e
+"$wyag" hash-object missing_file.txt 2> err_out
+hash_rc=$?
+set -e
+test $hash_rc -eq 128
+grep -q "fatal: Cannot open" err_out
+echo "recovered" > recovered.txt
+"$wyag" hash-object recovered.txt > /dev/null
+
 step hash-object -w
 cd left
 "$wyag" hash-object -w ../README > /dev/null

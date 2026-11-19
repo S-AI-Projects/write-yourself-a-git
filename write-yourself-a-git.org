@@ -1039,7 +1039,8 @@ Which converts to:
 #+END_SRC
 
 The actual implementation is very simple.  As usual, we create a small
-bridge function:
+bridge function. If the target file is missing, it provides a diagnostic
+troubleshooting explanation and exits with a fatal status code:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_hash_object(args):
@@ -1048,9 +1049,13 @@ bridge function:
       else:
           repo = None
 
-      with open(args.path, "rb") as fd:
-          sha = object_hash(fd, args.type.encode(), repo)
-          print(sha)
+      try:
+          with open(args.path, "rb") as fd:
+              sha = object_hash(fd, args.type.encode(), repo)
+              print(sha)
+      except FileNotFoundError:
+          print(f"fatal: Cannot open '{args.path}': No such file or directory", file=sys.stderr)
+          sys.exit(128)
 #+END_SRC
 
 The actual implementation is also trivial.  The =repo= argument is
