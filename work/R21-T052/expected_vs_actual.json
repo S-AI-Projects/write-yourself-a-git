@@ -1,0 +1,33 @@
+[
+  {
+    "test": "minimum_arguments_repo_sha",
+    "inputs": {
+      "sha": "402822f5e12a5f79ef1ccb6f3acf16596f7dcda4",
+      "seen": "omitted"
+    },
+    "actual_rc": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "optional_argument_seen_provided",
+    "inputs": {
+      "sha": "402822f5e12a5f79ef1ccb6f3acf16596f7dcda4",
+      "seen_count": 2
+    },
+    "actual_rc": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "invalid_combination_nonexistent_sha",
+    "inputs": {
+      "sha": "0000000000000000000000000000000000000000"
+    },
+    "exception_raised": true,
+    "status": "PASS"
+  },
+  {
+    "test": "cli_wyag_log_invocation",
+    "actual_rc": 0,
+    "status": "PASS"
+  }
+]
