@@ -1,0 +1,12 @@
+{
+  "task": "R21-T047",
+  "function": "repo_file",
+  "test_cases": [
+    "native_test_suite_repo_file_step",
+    "repo_file_existing_root_path",
+    "repo_file_nested_path_mkdir_true",
+    "repo_file_missing_parent_mkdir_false_returns_none",
+    "repo_file_parent_is_file_raises_exception",
+    "worktree_fixture_with_space_and_staged_unstaged_states"
+  ]
+}

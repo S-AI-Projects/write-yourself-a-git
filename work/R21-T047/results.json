@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "native_test_suite",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "repo_file_existing_file",
+      "path": "/private/var/folders/_j/ng4cq9js5pgdx_dy9gkmfy_h0000gn/T/wyag_repo_file_ucrybzee/.git/config",
+      "status": "PASS"
+    },
+    {
+      "name": "repo_file_mkdir_true",
+      "path": "/private/var/folders/_j/ng4cq9js5pgdx_dy9gkmfy_h0000gn/T/wyag_repo_file_ucrybzee/.git/logs/refs/heads/master",
+      "parent_exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "repo_file_missing_mkdir_false",
+      "result": null,
+      "status": "PASS"
+    },
+    {
+      "name": "repo_file_parent_is_file_error",
+      "exception_caught": true,
+      "status": "PASS"
+    },
+    {
+      "name": "git_status_verification",
+      "status_output": [
+        "A  \"file with space.txt\"",
+        "AM notes.txt",
+        "?? .gitconfig",
+        "?? unstaged.txt"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "passed": true
+}

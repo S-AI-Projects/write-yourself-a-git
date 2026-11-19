@@ -472,7 +472,10 @@ function receives =path= as a list)
 The next two functions, =repo_file()= and =repo_dir()=, return and
 optionally create a path to a file or a directory, respectively.  The
 difference between them is that the file version only creates
-directories up to the last component.
+directories up to the last component.  Specifically, =repo_file()= validates
+or creates the parent directory hierarchy using =repo_dir()= before returning
+the path to the target file.  If =mkdir= is =False= and the parent directory
+does not exist, =repo_file()= safely returns =None=.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_file(repo, *path, mkdir=False):
@@ -482,6 +485,7 @@ directories up to the last component.
 
       if repo_dir(repo, *path[:-1], mkdir=mkdir):
           return repo_path(repo, *path)
+      return None
 
   def repo_dir(repo, *path, mkdir=False):
       """Same as repo_path, but mkdir *path if absent if mkdir."""

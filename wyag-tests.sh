@@ -197,6 +197,37 @@ cmp file1 file2
 
 
 
+step "repo_file focused check"
+repo_file_testdir="$testdir/repo_file_test"
+mkdir -p "$repo_file_testdir"
+cd "$repo_file_testdir"
+"$wyag" init . > /dev/null
+
+python3 -c '
+import sys
+sys.path.insert(0, "'$(dirname "$wyag")'")
+import os
+import libwyag
+
+repo = libwyag.repo_find(".")
+assert repo is not None, "Failed to find repository"
+
+# 1. Existing root file path
+cfg = libwyag.repo_file(repo, "config")
+assert cfg and cfg.endswith("config"), f"Expected config path, got {cfg}"
+
+# 2. Non-existent path with mkdir=False returns None
+missing = libwyag.repo_file(repo, "nonexistent_dir", "somefile", mkdir=False)
+assert missing is None, f"Expected None for missing parent dir, got {missing}"
+
+# 3. Non-existent path with mkdir=True creates parent and returns path
+created = libwyag.repo_file(repo, "custom_dir", "sub_dir", "testfile.txt", mkdir=True)
+assert created and created.endswith("testfile.txt"), f"Expected valid path, got {created}"
+assert os.path.isdir(os.path.dirname(created)), "Expected parent directory to exist"
+'
+cd ..
+rm -rf "$repo_file_testdir"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
