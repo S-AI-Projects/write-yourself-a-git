@@ -1,0 +1,26 @@
+[
+  {
+    "test": "object_find_follow_false_returns_none",
+    "commit_sha": "17797ef9e6612cba213756ba877233c7059cf09f",
+    "result": null,
+    "status": "PASS"
+  },
+  {
+    "test": "object_find_follow_true_resolves_tree",
+    "commit_sha": "17797ef9e6612cba213756ba877233c7059cf09f",
+    "tree_sha": "ce776e0a79e49cc9a917c426d54b4ef6bf1b14de",
+    "status": "PASS"
+  },
+  {
+    "test": "mutant_rejected_by_test_input",
+    "mutant_result": null,
+    "expected_result": "ce776e0a79e49cc9a917c426d54b4ef6bf1b14de",
+    "mutant_killed": true,
+    "status": "PASS"
+  },
+  {
+    "test": "nonexistent_ref_error",
+    "exception_raised": true,
+    "status": "PASS"
+  }
+]
