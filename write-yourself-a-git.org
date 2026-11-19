@@ -1326,7 +1326,16 @@ dead, lookup "graphviz online" in your favorite search engine)
       log_graphviz(repo, object_find(repo, args.commit), set())
       print("}")
 
-  def log_graphviz(repo, sha, seen):
+  def log_graphviz(repo, sha, seen=None):
+      """Generate Graphviz digraph edges for commit history.
+
+      Arguments:
+      repo: GitRepository object
+      sha: Commit SHA string
+      seen: Optional set of visited commit hashes to avoid cycles
+      """
+      if seen is None:
+          seen = set()
 
       if sha in seen:
           return

@@ -128,6 +128,13 @@ GIT_AUTHOR_DATE="2010-01-01 01:02:03 +0100" \
                git commit --no-gpg-sign -m "Commit 2" > /dev/null
 cd ..
 
+step "log graphviz argument boundaries: R21-T052"
+cd left
+"$wyag" log HEAD > ../log.dot
+grep -q "digraph wyaglog" ../log.dot
+grep -q "Commit 2" ../log.dot
+cd ..
+
 step ls-tree
 cd left
 "$wyag" ls-tree HEAD > ../file1
