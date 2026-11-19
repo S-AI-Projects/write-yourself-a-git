@@ -1,0 +1,37 @@
+[
+  {
+    "test": "list_empty_tags",
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "output": "",
+    "status": "PASS"
+  },
+  {
+    "test": "create_lightweight_tag",
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "create_annotated_tag",
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "list_existing_tags",
+    "expected_rc": 0,
+    "actual_rc": 0,
+    "tags_found": [
+      "v1.0",
+      "v1.1"
+    ],
+    "status": "PASS"
+  },
+  {
+    "test": "tag_nonexistent_ref_failure",
+    "expected_nonzero": true,
+    "actual_rc": 1,
+    "status": "PASS"
+  }
+]

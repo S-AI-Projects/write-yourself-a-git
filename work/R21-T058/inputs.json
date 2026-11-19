@@ -1,0 +1,11 @@
+{
+  "inputs_log": [
+    {
+      "test": "list_empty_tags",
+      "rc": 0,
+      "out": "",
+      "err": ""
+    }
+  ],
+  "tests_run": 5
+}
