@@ -160,6 +160,18 @@ git rev-parse 8a617  >> ../file2
 cd ..
 cmp file1 file2
 
+step "ref_resolve isolated checks: R21-T060"
+cd left
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo = libwyag.repo_find(".")
+assert libwyag.ref_resolve(repo, "HEAD") is not None
+assert libwyag.ref_resolve(repo, "refs/heads/nonexistent") is None
+'
+cd ..
+
 step "ls-files "
 cd left
 "$wyag" ls-files > ../file1
