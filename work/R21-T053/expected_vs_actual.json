@@ -1,0 +1,20 @@
+[
+  {
+    "test": "ref_create_state_transition",
+    "ref_name": "tags/release-v1",
+    "created_path": "/var/folders/bp/98_z7d794xzfz4g87ty4gr3m0000gn/T/tmpz52jx15e/test_repo/.git/refs/tags/release-v1",
+    "written_content": "dda32a884b6466e3194b1cb11a5f197e428c804d",
+    "unrelated_state_preserved": true,
+    "status": "PASS"
+  },
+  {
+    "test": "ref_create_nested_hierarchy",
+    "ref_name": "tags/sub/nested-tag",
+    "status": "PASS"
+  },
+  {
+    "test": "wyag_tag_cli_execution",
+    "actual_rc": 0,
+    "status": "PASS"
+  }
+]

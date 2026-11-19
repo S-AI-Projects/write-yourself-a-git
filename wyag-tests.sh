@@ -160,6 +160,17 @@ git rev-parse 8a617  >> ../file2
 cd ..
 cmp file1 file2
 
+step "ref_create state transitions: R21-T053"
+cd left
+head_commit=$(cat .git/HEAD | cut -d' ' -f2)
+master_before=$(cat .git/$head_commit 2>/dev/null || true)
+"$wyag" tag test_tag HEAD
+test -f .git/refs/tags/test_tag
+if [ -n "$master_before" ]; then
+    test "$(cat .git/$head_commit)" = "$master_before"
+fi
+cd ..
+
 step "ls-files "
 cd left
 "$wyag" ls-files > ../file1
