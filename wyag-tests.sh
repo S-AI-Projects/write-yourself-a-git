@@ -197,6 +197,13 @@ cmp file1 file2
 
 
 
+step "cmd_init preserving spaces and wildcards: R21-T024"
+"$wyag" init "space repo dir"
+test -d "space repo dir/.git"
+"$wyag" init "wild*card[dir]"
+test -d "wild*card[dir]/.git"
+rm -rf "space repo dir" "wild*card[dir]"
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

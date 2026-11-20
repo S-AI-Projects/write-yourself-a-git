@@ -1,0 +1,13 @@
+[
+  {
+    "test": "init_path_with_spaces",
+    "path": "/var/folders/2j/1jx96ftx1jj7d60_82cbt0tc0000gn/T/tmp1nkhl26w/my custom repo with spaces",
+    "status": "PASS"
+  },
+  {
+    "test": "init_path_with_wildcards",
+    "path": "/var/folders/2j/1jx96ftx1jj7d60_82cbt0tc0000gn/T/tmp1nkhl26w/repo_*_[wild]",
+    "unrelated_files_intact": true,
+    "status": "PASS"
+  }
+]

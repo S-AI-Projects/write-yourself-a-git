@@ -624,6 +624,11 @@ command, we're only going to need two more things:
 
    #+BEGIN_SRC python :tangle libwyag.py
    def cmd_init(args):
+       """CLI bridge for init command.
+
+       Initializes repository at args.path, preserving paths with spaces
+       and wildcard characters without triggering glob or shell expansion.
+       """
        repo_create(args.path)
    #+END_SRC
 
