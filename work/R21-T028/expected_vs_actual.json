@@ -1,0 +1,19 @@
+[
+  {
+    "test": "rev_parse_head_match",
+    "wyag_sha": "8a45a722045908d2b6e69f599c0ad1e9bbb5ab1a",
+    "git_sha": "8a45a722045908d2b6e69f599c0ad1e9bbb5ab1a",
+    "status": "PASS"
+  },
+  {
+    "test": "rev_parse_tree_match",
+    "wyag_sha": "dd4a1676b8ff0f04e5fc7d79da6dc9cc2f2f2990",
+    "git_sha": "dd4a1676b8ff0f04e5fc7d79da6dc9cc2f2f2990",
+    "status": "PASS"
+  },
+  {
+    "test": "rev_parse_invalid_ref_error",
+    "exit_code": 1,
+    "status": "PASS"
+  }
+]

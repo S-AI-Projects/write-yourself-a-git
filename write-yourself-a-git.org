@@ -2510,6 +2510,7 @@ The bridge does all the job:
 
 #+BEGIN_SRC python :tangle libwyag.py
   def cmd_rev_parse(args):
+      """Resolve a revision identifier to an object SHA hash."""
       if args.type:
           fmt = args.type.encode()
       else:
@@ -2517,7 +2518,11 @@ The bridge does all the job:
 
       repo = repo_find()
 
-      print (object_find(repo, args.name, fmt, follow=True))
+      sha = object_find(repo, args.name, fmt, follow=True)
+      if sha:
+          print(sha)
+      else:
+          raise ValueError(f"Revision '{args.name}' not found")
 #+END_SRC
 
 And it works:
