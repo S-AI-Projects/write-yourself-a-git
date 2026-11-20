@@ -197,6 +197,14 @@ cmp file1 file2
 
 
 
+step "cmd_rev_parse focused check: R21-T028"
+cd left
+rev_head=$("$wyag" rev-parse HEAD)
+test -n "$rev_head"
+git_head=$(git rev-parse HEAD)
+test "$rev_head" = "$git_head"
+cd ..
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
