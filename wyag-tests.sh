@@ -197,6 +197,18 @@ cmp file1 file2
 
 
 
+step "cmd_init command contract: R21-T030"
+mkdir -p /tmp/wyag_contract_test
+cd /tmp/wyag_contract_test
+"$wyag" init > ../init_out.txt
+test -d .git/objects
+test -d .git/refs/heads
+test -f .git/HEAD
+test -f .git/config
+grep -q "ref: refs/heads/master" .git/HEAD
+cd - > /dev/null
+rm -rf /tmp/wyag_contract_test ../init_out.txt
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

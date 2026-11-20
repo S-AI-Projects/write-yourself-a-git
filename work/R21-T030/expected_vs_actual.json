@@ -1,0 +1,17 @@
+[
+  {
+    "test": "ordinary_success_explicit_path",
+    "exit_code": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "default_path_cwd",
+    "exit_code": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "invalid_state_rejection",
+    "exit_code": 1,
+    "status": "PASS"
+  }
+]

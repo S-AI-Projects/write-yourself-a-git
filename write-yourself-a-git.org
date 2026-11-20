@@ -624,6 +624,12 @@ command, we're only going to need two more things:
 
    #+BEGIN_SRC python :tangle libwyag.py
    def cmd_init(args):
+       """Command handler contract for wyag init.
+
+       Initializes repository layout at args.path (defaulting to current directory).
+       Ensures necessary directory tree (.git/objects, .git/refs/tags, .git/refs/heads)
+       and base files (HEAD, config, description) are created.
+       """
        repo_create(args.path)
    #+END_SRC
 
