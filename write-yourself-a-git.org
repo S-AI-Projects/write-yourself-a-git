@@ -520,7 +520,12 @@ create if doesn't already exist) and create the *git directory* inside
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_create(path):
-      """Create a new repository at path."""
+      """Create a new repository at path.
+
+      Validates that destination directory either does not exist, or exists and is
+      an empty directory. Non-directory paths or directories with non-empty gitdirs
+      are rejected.
+      """
 
       repo = GitRepository(path, True)
 

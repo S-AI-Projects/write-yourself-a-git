@@ -1,0 +1,2 @@
+git: git version 2.54.0 (Apple Git-157)
+python3: Python 3.14.7

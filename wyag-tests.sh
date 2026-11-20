@@ -197,6 +197,21 @@ cmp file1 file2
 
 
 
+step "repo_create regression check: R21-T029"
+mkdir -p /tmp/wyag_reg_dir/.git/objects
+touch /tmp/wyag_reg_dir/.git/objects/dummy
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+try:
+    libwyag.repo_create("/tmp/wyag_reg_dir")
+    assert False, "Should reject non-empty repository directory"
+except Exception as e:
+    assert "not empty" in str(e)
+'
+rm -rf /tmp/wyag_reg_dir
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
