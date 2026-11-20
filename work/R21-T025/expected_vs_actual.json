@@ -1,0 +1,22 @@
+[
+  {
+    "test": "find_from_root",
+    "worktree": "/private/var/folders/2j/1jx96ftx1jj7d60_82cbt0tc0000gn/T/tmpwnbavc9d/test_repo",
+    "status": "PASS"
+  },
+  {
+    "test": "find_from_nested_subdir",
+    "worktree": "/private/var/folders/2j/1jx96ftx1jj7d60_82cbt0tc0000gn/T/tmpwnbavc9d/test_repo",
+    "status": "PASS"
+  },
+  {
+    "test": "find_outside_optional_returns_none",
+    "result": null,
+    "status": "PASS"
+  },
+  {
+    "test": "find_outside_required_raises_exception",
+    "exception_raised": true,
+    "status": "PASS"
+  }
+]

@@ -197,6 +197,26 @@ cmp file1 file2
 
 
 
+step "repo_find characterization tests: R21-T025"
+cd left
+mkdir -p sub1/sub2
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo_root = libwyag.repo_find(".")
+repo_sub = libwyag.repo_find("sub1/sub2")
+assert repo_root.worktree == repo_sub.worktree
+assert libwyag.repo_find("/tmp", required=False) is None
+try:
+    libwyag.repo_find("/tmp", required=True)
+    assert False
+except Exception:
+    pass
+'
+rm -rf sub1
+cd ..
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

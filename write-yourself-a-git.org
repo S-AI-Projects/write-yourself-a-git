@@ -655,24 +655,26 @@ repository, it will check for the presence of a =.git= directory.
 
 #+BEGIN_SRC python :tangle libwyag.py
   def repo_find(path=".", required=True):
+      """Find the root GitRepository starting from path by searching upward.
+
+      Traverses ancestor directories until a '.git' directory is found or
+      the filesystem root is reached. If required is False and no repository
+      exists, returns None; otherwise raises an Exception.
+      """
       path = os.path.realpath(path)
 
       if os.path.isdir(os.path.join(path, ".git")):
           return GitRepository(path)
 
-      # If we haven't returned, recurse in parent, if w
       parent = os.path.realpath(os.path.join(path, ".."))
 
+      # Base case: reached filesystem root where parent directory is itself
       if parent == path:
-          # Bottom case
-          # os.path.join("/", "..") == "/":
-          # If parent==path, then path is root.
           if required:
               raise Exception("No git directory.")
-          else:
-              return None
+          return None
 
-      # Recursive case
+      # Recursive search in parent directory
       return repo_find(parent, required)
 #+END_SRC
 
