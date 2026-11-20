@@ -570,13 +570,28 @@ single section (=[core]=) and three fields:
 We create this file using Python's =configparser= lib:
 
 #+BEGIN_SRC python :tangle libwyag.py
-def repo_default_config():
+def repo_default_config(extra_sections=None):
+    """Return default ConfigParser object for a newly initialized git repository.
+
+    Arguments:
+    extra_sections: Optional dict of {section: {key: value}} to merge into configuration.
+    """
+    if extra_sections is not None and not isinstance(extra_sections, dict):
+        raise TypeError("extra_sections must be a dict or None")
+
     ret = configparser.ConfigParser()
 
     ret.add_section("core")
     ret.set("core", "repositoryformatversion", "0")
     ret.set("core", "filemode", "false")
     ret.set("core", "bare", "false")
+
+    if extra_sections:
+        for sec, kv in extra_sections.items():
+            if not ret.has_section(sec):
+                ret.add_section(sec)
+            for k, v in kv.items():
+                ret.set(sec, str(k), str(v))
 
     return ret
 #+END_SRC

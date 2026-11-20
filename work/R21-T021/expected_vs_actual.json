@@ -1,0 +1,34 @@
+[
+  {
+    "test": "minimum_argument_list_zero_args",
+    "inputs": {},
+    "actual_core_sections": [
+      "core"
+    ],
+    "status": "PASS"
+  },
+  {
+    "test": "optional_argument_extra_sections",
+    "inputs": {
+      "user": {
+        "name": "Mayank Gupta",
+        "email": "tester@example.com"
+      }
+    },
+    "actual_user_name": "Mayank Gupta",
+    "status": "PASS"
+  },
+  {
+    "test": "invalid_combination_non_dict_argument",
+    "inputs": {
+      "extra_sections": "invalid_non_dict_string"
+    },
+    "exception_raised": true,
+    "status": "PASS"
+  },
+  {
+    "test": "repo_config_bare_check",
+    "actual": "false",
+    "status": "PASS"
+  }
+]

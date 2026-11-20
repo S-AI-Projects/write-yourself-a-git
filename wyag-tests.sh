@@ -197,6 +197,22 @@ cmp file1 file2
 
 
 
+step "repo_default_config argument boundaries: R21-T021"
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+cfg1 = libwyag.repo_default_config()
+assert cfg1.get("core", "repositoryformatversion") == "0"
+cfg2 = libwyag.repo_default_config({"user": {"name": "Test User"}})
+assert cfg2.get("user", "name") == "Test User"
+try:
+    libwyag.repo_default_config("invalid_type")
+    assert False, "Should raise TypeError"
+except TypeError:
+    pass
+'
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
