@@ -1,0 +1,17 @@
+[
+  {
+    "test": "valid_repo_creation",
+    "path": "/var/folders/2j/1jx96ftx1jj7d60_82cbt0tc0000gn/T/tmp1_nk7m2s/valid_repo",
+    "status": "PASS"
+  },
+  {
+    "test": "reject_file_target",
+    "exception_raised": true,
+    "status": "PASS"
+  },
+  {
+    "test": "reject_non_empty_gitdir",
+    "exception_raised": true,
+    "status": "PASS"
+  }
+]
