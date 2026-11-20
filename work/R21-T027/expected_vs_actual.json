@@ -1,0 +1,14 @@
+[
+  {
+    "test": "failing_invocation_invalid_object",
+    "exception_raised": true,
+    "diagnostic_message": "object_write failed: expected GitObject instance with serialize() method",
+    "status": "PASS"
+  },
+  {
+    "test": "corrected_invocation_success",
+    "sha": "4a58007052a65fbc2fc3f910f2855f45a4058e74",
+    "object_created": true,
+    "status": "PASS"
+  }
+]
