@@ -1,0 +1,15 @@
+[
+  {
+    "test": "missing_index_branch",
+    "entries_count": 0,
+    "status": "PASS"
+  },
+  {
+    "test": "existing_index_success_branch",
+    "entries_found": [
+      "notes.txt",
+      "staged.txt"
+    ],
+    "status": "PASS"
+  }
+]

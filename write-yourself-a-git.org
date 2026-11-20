@@ -2705,6 +2705,11 @@ produce more elegant code in C than in Python…)
 
 #+BEGIN_SRC python :tangle libwyag.py
   def index_read(repo):
+      """Read and parse the Git index binary file into a GitIndex object.
+
+      If the index file is absent (e.g. in a fresh empty repository), returns an empty
+      GitIndex object rather than raising a missing file error.
+      """
       index_file = repo_file(repo, "index")
 
       # New repositories have no index!
