@@ -1909,7 +1909,17 @@ paths.
       ls_tree(repo, args.tree, args.recursive)
 
   def ls_tree(repo, ref, recursive=None, prefix=""):
+      """Print contents of a tree object without modifying repository state.
+
+      Arguments:
+      repo: GitRepository object
+      ref: Tree reference or SHA
+      recursive: Recurse into subtrees if True
+      prefix: Prefix to prepend to entry paths
+      """
       sha = object_find(repo, ref, fmt=b"tree")
+      if not sha:
+          raise ValueError(f"Tree object not found for reference: {ref}")
       obj = object_read(repo, sha)
       for item in obj.items:
           if len(item.mode) == 5:

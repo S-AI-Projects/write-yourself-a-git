@@ -1,0 +1,13 @@
+[
+  {
+    "test": "ls_tree_state_preservation",
+    "head_unchanged": true,
+    "status_unchanged": true,
+    "status": "PASS"
+  },
+  {
+    "test": "ls_tree_invalid_ref_failure",
+    "exception_raised": true,
+    "status": "PASS"
+  }
+]
