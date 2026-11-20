@@ -3388,8 +3388,16 @@ be straightforward.  I'm leaving the gory details for the comments,
 but it's really just =index_read= in reverse --- refer to it if
 needed, and the =GitIndexEntry= class.
 
+For example, reading and writing the repository index:
+#+begin_example python
+>>> repo = repo_find()
+>>> index = index_read(repo)
+>>> index_write(repo, index)
+#+end_example
+
 #+begin_src python :tangle libwyag.py
   def index_write(repo, index):
+      """Serialize and write a GitIndex object to the repository's .git/index file."""
       with open(repo_file(repo, "index"), "wb") as f:
 
           # HEADER

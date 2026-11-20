@@ -197,6 +197,20 @@ cmp file1 file2
 
 
 
+step "index_write usage example: R21-T026"
+cd left
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo = libwyag.repo_find(".")
+index = libwyag.index_read(repo)
+libwyag.index_write(repo, index)
+index_after = libwyag.index_read(repo)
+assert len(index.entries) == len(index_after.entries)
+'
+cd ..
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
