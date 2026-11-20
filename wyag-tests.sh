@@ -197,6 +197,21 @@ cmp file1 file2
 
 
 
+step "object_write failure diagnostic and recovery: R21-T027"
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+try:
+    libwyag.object_write(None)
+    assert False, "Should raise ValueError"
+except ValueError as e:
+    assert "object_write failed" in str(e)
+blob = libwyag.GitBlob(b"valid content\n")
+sha = libwyag.object_write(blob)
+assert len(sha) == 40
+' 
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"

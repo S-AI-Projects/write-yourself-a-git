@@ -893,6 +893,10 @@ it's the hash of the object itself, uncompressed, not just its contents)
 
 #+BEGIN_SRC python :tangle libwyag.py
   def object_write(obj, repo=None):
+      """Serialize and write a GitObject to repository store, returning its SHA."""
+      if obj is None or not hasattr(obj, "serialize"):
+          raise ValueError("object_write failed: expected GitObject instance with serialize() method")
+
       # Serialize object data
       data = obj.serialize()
       # Add header
