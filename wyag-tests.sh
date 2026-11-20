@@ -197,6 +197,14 @@ cmp file1 file2
 
 
 
+step "ls_tree state transitions: R21-T022"
+cd left
+head_before=$(cat .git/HEAD)
+"$wyag" ls-tree HEAD > ../ls_tree_verify.txt
+test -s ../ls_tree_verify.txt
+test "$(cat .git/HEAD)" = "$head_before"
+cd ..
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
