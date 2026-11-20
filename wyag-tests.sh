@@ -197,6 +197,19 @@ cmp file1 file2
 
 
 
+step "index_read missing-dependency and success branches: R21-T023"
+mkdir -p /tmp/wyag_empty_repo
+"$wyag" init /tmp/wyag_empty_repo > /dev/null
+python3 -c '
+import sys, os
+sys.path.insert(0, os.path.dirname("'"$wyag"'"))
+import libwyag
+repo_empty = libwyag.repo_find("/tmp/wyag_empty_repo")
+idx_empty = libwyag.index_read(repo_empty)
+assert len(idx_empty.entries) == 0
+'
+rm -rf /tmp/wyag_empty_repo
+
 step THIS WAS A TRIUMPH
 step "I'M MAKING A NOTE HERE"
 step "HUGE SUCCESS"
